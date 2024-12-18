@@ -1,6 +1,6 @@
 import { ConnectButton, lightTheme } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
-import { client } from "../../../../crowd-funding-client/app/utility/constants";
+import { client } from "../client";
 
 const wallets = [
   createWallet("io.metamask"),
