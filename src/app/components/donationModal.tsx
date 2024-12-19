@@ -7,6 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { motion } from "framer-motion"
 import { EclipseIcon as Ethereum } from 'lucide-react'
+import { getContract, prepareContractCall } from "thirdweb"
+import { client } from "../client"
+import { polygonAmoy } from "thirdweb/chains"
+import { useSendTransaction } from "thirdweb/react"
+import { useParams } from 'next/navigation'
+import {  parseEther } from "ethers"; // Import ethers for handling ETH values
 
 interface DonationModalProps {
   isOpen: boolean
@@ -14,18 +20,29 @@ interface DonationModalProps {
   onDonate: (amount: string, comment: string) => void
 }
 
+const contract = getContract({
+  client,
+  address: "0x794cA73827f7A848d4972C445012AD7BA1376B88",
+  chain: polygonAmoy,
+});
 export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps) {
   const [ethAmount, setEthAmount] = useState('')
   const [usdAmount, setUsdAmount] = useState('')
   const [comment, setComment] = useState('')
   const [ethPrice, setEthPrice] = useState(0)
-
+  const {mutate:sendTransaction,failureReason,error,isError,isPending}=useSendTransaction()
+  const params=useParams()
+  const id =BigInt(params.id);
   useEffect(() => {
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
       .then(response => response.json())
       .then(data => setEthPrice(data.ethereum.usd))
   }, [])
-
+  
+  if(error){
+    console.log('feiler reson',failureReason)
+    console.log('error',error)
+  }
   useEffect(() => {
     if (ethAmount && ethPrice) {
       const usd = parseFloat(ethAmount) * ethPrice
@@ -36,9 +53,19 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
   }, [ethAmount, ethPrice])
 
   const handleDonate = () => {
-    onDonate(ethAmount, comment)
-    onClose()
-  }
+    // onDonate(ethAmount, comment)
+    // onClose()
+
+    const transaction = prepareContractCall({
+      contract,
+      method:
+        "function donate(uint256 _id, string _comment) payable",
+      params: [id, comment],
+    value: parseEther(ethAmount.toString()),
+    });
+    sendTransaction(transaction);
+  };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -86,7 +113,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
             onClick={handleDonate} 
             className="w-full py-6 text-lg font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105"
           >
-            Donate with Ethereum
+            {isPending?"sending":"Donate with polygon"}
           </Button>
         </div>
       </DialogContent>

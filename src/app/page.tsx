@@ -4,6 +4,7 @@
 import { CampaignCard } from "./components/campaignCard";
 import { BottomNavigations } from "./components/buttomNavigations";
 import Header from "./components/header";
+import CampaignList from "./components/campaignList";
 
 export default function Home() {
   return (
@@ -12,14 +13,8 @@ export default function Home() {
       <h1 className="font-bold my-5 text-lg sm:text-2xl">Popular Campaigns</h1>
       
       {/* Responsive Grid for Campaign Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-        <CampaignCard />
-      </div>
+
+        <CampaignList/>
 
       <BottomNavigations />
     </div>

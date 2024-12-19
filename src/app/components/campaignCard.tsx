@@ -1,46 +1,76 @@
-import  Link  from "next/link";
+
+// CampaignCard.tsx
+import Link from "next/link";
 import React from "react";
 
-export const CampaignCard = () => {
-  return (
-    <Link href={`/campaign/100`}>
+interface Donator {
+  amount: bigint;
+  comment: string;
+  donator: string;
+}
 
-    <div className="w-full sm:w-[320px] bg-white shadow rounded-lg">
-      <img
-        src="https://plus.unsplash.com/premium_photo-1676923828336-0d9067844055?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        alt="Powered Kits"
-        className="w-full h-[180px] object-cover rounded-t-lg"
-      />
-      <div className="p-4">
-        <h3 className="mt-2 font-title text-neutral-950 text-lg">
-          Powered Kits Learning Boxes
-        </h3>
-        <p className="mt-1 text-sm text-neutral-600">
-          Fun, durable and reusable boxes with eco-friendly options.
-        </p>
-        <div className="flex justify-between mt-4 text-sm text-neutral-950">
-          <div>
-            <p className="font-bold">$2,000</p>
-            <p className="text-neutral-600">Raised of $1,900</p>
-          </div>
-          <div className="text-right">
-            <p className="font-bold">173</p>
-            <p className="text-neutral-600">Total backers</p>
+interface CampaignProps {
+  id: string;
+  owner: string;
+  title: string;
+  story: string;
+  target: number;  // Changed from bigint to number
+  deadline: number; // Changed from bigint to number
+  amountCollected: number; // Changed from bigint to number
+  image: string;
+  donators: Donator[];
+}
+
+export const CampaignCard: React.FC<CampaignProps> = ({
+  id,
+  owner,
+  title,
+  story,
+  target,
+  deadline,
+  amountCollected,
+  image,
+  donators,
+}) => {
+  return (
+    <Link href={`campaign/${id}`} className="block h-full">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden h-full flex flex-col transition-transform duration-300 hover:scale-105">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-48 object-cover"
+        />
+        <div className="p-4 flex-grow">
+          <h3 className="font-title text-neutral-950 text-xl font-semibold mb-2 line-clamp-2">
+            {title}
+          </h3>
+          <p className="text-sm text-neutral-600 mb-4 line-clamp-3">
+            {story}
+          </p>
+          <div className="flex justify-between text-sm text-neutral-950">
+            <div>
+              <p className="font-bold">{amountCollected}</p>
+              <p className="text-neutral-600">Raised of {target}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-bold">{donators.length}</p>
+              <p className="text-neutral-600">Total backers</p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center mt-4">
-          <img
-            src="https://tools-api.webcrumbs.org/image-placeholder/40/40/avatars/2"
-            alt="Avatar"
-            className="w-[40px] h-[40px] rounded-full object-contain"
-          />
-          <p className="ml-2 text-sm text-neutral-950">
-            by <span className="font-bold">Mahfuzul Nabil</span>
-          </p>
+        <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+          <div className="flex items-center">
+            <img
+              src={`https://api.dicebear.com/6.x/initials/svg?seed=${owner}`}
+              alt="Avatar"
+              className="w-8 h-8 rounded-full"
+            />
+            <p className="ml-2 text-sm text-neutral-950">
+              by <span className="font-semibold">{owner.slice(0, 6)}...{owner.slice(-4)}</span>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
     </Link>
-
   );
 };

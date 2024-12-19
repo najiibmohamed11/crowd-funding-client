@@ -2,7 +2,7 @@
 const nextConfig = {
   // fixes wallet connect dependency issue https://docs.walletconnect.com/web3modal/nextjs/about#extra-configuration
   images:{
-    domains:['plus.unsplash.com']
+    domains:['plus.unsplash.com', 'images.unsplash.com'  ]
   },  
   webpack: (config) => {
     config.externals.push("pino-pretty", "lokijs", "encoding");

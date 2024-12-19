@@ -11,10 +11,42 @@ import { Badge } from "@/components/ui/badge"
 import { Heart, Share2, MessageCircle } from 'lucide-react'
 import Header from '@/app/components/header'
 import CampaignInfoCard from '@/app/components/campaignInfoCard'
+import { client } from '@/app/client'
+import { getContract, readContract } from "thirdweb";
+import { polygonAmoy } from "thirdweb/chains";
+import { useReadContract } from 'thirdweb/react'
+import { useParams } from 'next/navigation'
 
+
+const contract = getContract({
+  client,
+  address: "0x794cA73827f7A848d4972C445012AD7BA1376B88",
+  chain: polygonAmoy,
+});
 export default function CampaignDetails() {
-  const [isLiked, setIsLiked] = useState(false)
+  const params=useParams()
+  const id =Number(params.id);
 
+  const { data, isLoading, error } = useReadContract({
+    contract,
+    method:
+      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment)[] donators)[])",
+    params: [],
+  });
+  if (isLoading) return <div className="text-center py-10">Loading campaigns...</div>;
+  if (error) return <div className="text-center py-10 text-red-500">Error loading campaigns: {error.message}</div>;
+  if (!data) return <div className="text-center py-10">No data available.</div>;
+  
+  const campaign = data[id];
+  if (!campaign) return <div className="text-center py-10">Campaign not found.</div>;
+
+  const formattedCampaigns = {
+    titile:campaign.title,
+    target: Number(campaign.target), // Convert target from bigint to number
+    amountCollected: Number(campaign.amountCollected) / 1e18, // Convert and normalize amountCollected
+    deadline: Number(campaign.deadline), // Convert deadline from bigint to number
+    donators:campaign.donators
+  }
   return (
     <div className="flex flex-col justify-around items-start mx-4 sm:mx-12 lg:mx-24 pb-16">
     <Header/>
@@ -25,7 +57,7 @@ export default function CampaignDetails() {
           {/* Image Section */}
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl lg:aspect-square">
             <Image
-              src="https://plus.unsplash.com/premium_photo-1676923828336-0d9067844055?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={campaign.image}
               alt="Campaign hero image"
               fill
               className="object-cover transition-transform duration-300 hover:scale-105"
@@ -34,7 +66,7 @@ export default function CampaignDetails() {
           </div>
 
           {/* Campaign Info Card */}
-          <CampaignInfoCard/>
+          <CampaignInfoCard  title={formattedCampaigns.titile} target={formattedCampaigns.target} amountCollected={formattedCampaigns.amountCollected} deadline={formattedCampaigns.deadline} donators={formattedCampaigns.donators}/>
       
         </div>
 
@@ -51,7 +83,7 @@ export default function CampaignDetails() {
                 <CardContent className="p-6">
                 <h2 className="text-xl font-semibold mb-4">About this project</h2>
                     <p className="text-gray-600">
-                    Our eco-friendly learning boxes are designed to provide an engaging and sustainable educational experience. Each box is crafted from recyclable materials and can be reused for multiple activities, promoting both learning and environmental consciousness. Perfect for schools, homeschooling, or curious minds of all ages!
+                   {campaign.story}
                     </p>
                     <div className="mt-6">
                       <h3 className="font-semibold mb-2">Creator</h3>
