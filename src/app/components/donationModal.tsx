@@ -32,7 +32,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
   const [ethPrice, setEthPrice] = useState(0)
   const {mutate:sendTransaction,failureReason,error,isError,isPending}=useSendTransaction()
   const params=useParams()
-  const id =BigInt(params.id);
+  const id =BigInt(params.id as string);
   useEffect(() => {
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
       .then(response => response.json())

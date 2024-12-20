@@ -45,7 +45,7 @@ export default function CampaignDetails() {
     target: Number(campaign.target), // Convert target from bigint to number
     amountCollected: Number(campaign.amountCollected) / 1e18, // Convert and normalize amountCollected
     deadline: Number(campaign.deadline), // Convert deadline from bigint to number
-    donators:campaign.donators
+    donators: [...campaign.donators], // Convert readonly array to mutable array
   }
   return (
     <div className="flex flex-col justify-around items-start mx-4 sm:mx-12 lg:mx-24 pb-16">

@@ -22,7 +22,7 @@ interface CampaignCardProp {
   target: Number; // Convert target from bigint to number
   amountCollected: Number; // Convert and normalize amountCollected
   deadline: Number; // Convert deadline from bigint to number
-  donators: Donator[];
+  donators: readonly Donator[];
 }
 const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   title,
@@ -63,7 +63,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   const campaignUrl = `${window.location.origin}/campaign/${id}`;
 
   const RisedAmountPercantageCalculation=()=>{
-    return (amountCollected/target)*100
+  return (Number(amountCollected) / Number(target)) * 100;
   }
   return (
     <Card className="overflow-hidden bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white shadow-xl dark:shadow-2xl">
@@ -75,10 +75,10 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           <div>
             <div className="flex items-baseline justify-between">
               <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-blue-500 dark:from-green-400 dark:to-blue-500">
-                {amountCollected} pol
+                {amountCollected.toString()} pol
               </span>
               <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                raised of {target}ETH goal
+                raised of {target.toString()}ETH goal
               </span>
             </div>
             <Progress

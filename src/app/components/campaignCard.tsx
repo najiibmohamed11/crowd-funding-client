@@ -18,7 +18,7 @@ interface CampaignProps {
   deadline: number; // Changed from bigint to number
   amountCollected: number; // Changed from bigint to number
   image: string;
-  donators: Donator[];
+  donators: readonly Donator[];
 }
 
 export const CampaignCard: React.FC<CampaignProps> = ({
