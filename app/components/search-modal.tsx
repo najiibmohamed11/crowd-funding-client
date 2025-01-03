@@ -65,14 +65,14 @@ export function SearchModal() {
     );
   }, [data, search]);
 
-  if (isLoading)
+  if (isLoading&&open)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center py-10">Loading campaigns...</div>
       </div>
     );
 
-  if (error)
+  if (error&&open)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center py-10 text-red-500">
@@ -81,7 +81,7 @@ export function SearchModal() {
       </div>
     );
 
-  if (!data)
+  if (!data&&open)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center py-10">No data available.</div>

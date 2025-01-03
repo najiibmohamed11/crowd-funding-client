@@ -1,3 +1,4 @@
+'use client'
 import { ConnectButton, lightTheme } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
 import { client } from "../client";

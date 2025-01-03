@@ -1,16 +1,17 @@
+'use client'
+import Web3Avatar from "@/app/components/web3Avatar"
+import { useActiveAccount } from "thirdweb/react"
+
 export function Profile() {
+  const account=useActiveAccount()
     return (
       <div className="bg-white rounded-2xl p-6">
         <h2 className="text-xl font-medium mb-6">Your profile</h2>
         <div className="flex items-center gap-3 mb-8">
-          <img
-            src="/placeholder.svg"
-            alt="Jessica Wilkinson"
-            className="w-12 h-12 rounded-full"
-          />
+        <Web3Avatar address={account?.address}/>
           <div>
-            <div className="font-medium">Jessica Wilkinson</div>
-            <div className="text-gray-500">Digital Artist</div>
+            <div className="font-medium">{account?.address.slice(0,6)}....{account?.address.slice(-4)}</div>
+            <div className="text-gray-500">creator</div>
           </div>
         </div>
         <div>

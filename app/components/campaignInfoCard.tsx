@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { FaEthereum } from "react-icons/fa";
 import {
   Share2,
   MessageCircle,
@@ -102,7 +103,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
               className="flex-1"
               onClick={() => setIsModalOpen(true)}
             >
-              <Ethereum className="mr-2 h-4 w-4" />
+              <FaEthereum className="mr-2 h-4 w-4" />
               Back this project
             </Button>
             <Button

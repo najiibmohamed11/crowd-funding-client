@@ -13,6 +13,7 @@ import { polygonAmoy } from "thirdweb/chains"
 import { useSendTransaction } from "thirdweb/react"
 import { useParams } from 'next/navigation'
 import {  parseEther } from "ethers"; // Import ethers for handling ETH values
+import { FaEthereum } from 'react-icons/fa'
 
 interface DonationModalProps {
   isOpen: boolean
@@ -22,7 +23,7 @@ interface DonationModalProps {
 
 const contract = getContract({
   client,
-  address: "0x794cA73827f7A848d4972C445012AD7BA1376B88",
+  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
   chain: polygonAmoy,
 });
 export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps) {
@@ -38,6 +39,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
       .then(response => response.json())
       .then(data => setEthPrice(data.ethereum.usd))
   }, [])
+  const now = new Date().toString()
   
   if(error){
     console.log('feiler reson',failureReason)
@@ -59,9 +61,9 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
     const transaction = prepareContractCall({
       contract,
       method:
-        "function donate(uint256 _id, string _comment) payable",
-      params: [id, comment],
-    value: parseEther(ethAmount.toString()),
+        "function donate(uint256 _id, string _comment, string _date) payable",
+      params: [id, comment, now],
+      value: parseEther(ethAmount.toString()),
     });
     sendTransaction(transaction);
   };
@@ -71,7 +73,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white border-gray-200 dark:border-none shadow-xl dark:shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-600">
+          <DialogTitle className="text-3xl font-bold  ">
             Back this project
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-400">
@@ -88,7 +90,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
               className="pl-12 pr-20 py-6 text-2xl font-bold bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <Ethereum className="h-6 w-6 text-blue-500" />
+              <FaEthereum className="h-6 w-6 " />
             </div>
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <span className="text-xl font-semibold text-gray-400 dark:text-gray-500">ETH</span>
@@ -111,7 +113,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
         <div className="flex justify-end">
           <Button 
             onClick={handleDonate} 
-            className="w-full py-6 text-lg font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="w-full py-6 text-lg font-bold text-white  transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             {isPending?"sending":"Donate with polygon"}
           </Button>

@@ -20,7 +20,7 @@ import Web3Avatar from "@/app/components/web3Avatar";
 
 const contract = getContract({
   client,
-  address: "0x794cA73827f7A848d4972C445012AD7BA1376B88",
+  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
   chain: polygonAmoy,
 });
 
@@ -31,9 +31,10 @@ export default function CampaignDetails() {
   const { data, isLoading, error } = useReadContract({
     contract,
     method:
-      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment)[] donators)[])",
+      "function getOngoingCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
+
 
   if (isLoading)
     return (
