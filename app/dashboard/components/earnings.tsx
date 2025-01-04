@@ -55,32 +55,36 @@ export function Earnings() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-medium">Earnings</h2>
       </div>
-      <div className="rounded-2xl p-6">
         <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <XAxis
-                dataKey="date"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#888" }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#888" }}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#FF6B6B"
-                strokeWidth={5}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
+  <LineChart 
+    data={chartData} 
+  >
+    <XAxis
+      dataKey="date"
+      axisLine={false}
+      tickLine={false}
+      tick={{ fill: "#888" }}
+      padding={{ left: 15, }} // Adds padding to the X-axis
+    />
+    <YAxis
+      axisLine={false}
+      tickLine={false}
+      tick={{ fill: "#888" }}
+      padding={{bottom:20 }} // Adds padding to the X-axis
+    />
+    <Line
+      type="monotone"
+      dataKey="value"
+      stroke="#FF6B6B"
+      strokeWidth={5}
+      dot={false}
+    />
+  </LineChart>
+</ResponsiveContainer>
+
         </div>
-      </div>
+
     </div>
   )
 }
