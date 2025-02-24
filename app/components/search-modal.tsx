@@ -29,7 +29,7 @@ interface Campaign {
 
 const contract = getContract({
   client,
-  address: "0x794cA73827f7A848d4972C445012AD7BA1376B88",
+  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
   chain: polygonAmoy,
 });
 
@@ -51,7 +51,7 @@ export function SearchModal() {
   const { data, isLoading, error } = useReadContract({
     contract,
     method:
-      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment)[] donators)[])",
+      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
 
@@ -121,9 +121,7 @@ export function SearchModal() {
                     <span className="text-xl font-semibold tracking-tight">
                       {campaign.title}
                     </span>
-                    <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                      Active
-                    </div>
+         
                   </div>
                   <span className="text-sm text-muted-foreground flex items-center gap-2">
                     <span className="inline-block h-2 w-2 rounded-full bg-blue-500"></span>

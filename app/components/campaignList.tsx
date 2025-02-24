@@ -17,10 +17,13 @@ const CampaignList = () => {
   const { data, isLoading, error } = useReadContract({
     contract,
     method:
-      "function getOngoingCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
 
+    
+
+  
 
   if (isLoading) {
     return (
@@ -33,6 +36,7 @@ const CampaignList = () => {
       </div>
     );
   }
+
 
   if (error) return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

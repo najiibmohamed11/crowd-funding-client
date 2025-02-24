@@ -17,10 +17,11 @@ export function Profile() {
   const account = useActiveAccount()
   const {mutate:sendTransaction}=useSendTransaction()
 
+
   const { data, isPending } = useReadContract({
     contract: contract,
-    method: "function getOngoingCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
-    params: [],
+    method:"function getUserOngoingCampaigns(address _user) view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    params: [account?.address],
   });
 
   if (isPending) {
@@ -28,7 +29,7 @@ export function Profile() {
   }
 
   if (!data || data.length === 0) {
-    return <div>No campaigns found.</div>
+    return <div></div>
   }
 
   const lastCampaign = data[data.length - 1];
@@ -42,6 +43,7 @@ export function Profile() {
     return ((collectedAmount / target) * 100).toFixed(2); // Limit to 2 decimals
   };
   const lastCampaignId=data.length-1;
+
 
   const progress = Number(percentageCalculator(Number(lastCampaign.amountCollected), Number(lastCampaign.target)));
   const paus=()=>{

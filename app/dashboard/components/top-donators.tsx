@@ -26,7 +26,7 @@ const donators = [
 
 export function TopDonators() {
   return (
-    <div className="bg-white rounded-2xl p-6">
+    <div className=" rounded-2xl p-6">
       <h2 className="text-xl font-medium mb-6">Top 10 donators</h2>
       <div className="space-y-6">
         {donators.map((donator) => (

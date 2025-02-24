@@ -31,10 +31,9 @@ export default function CampaignDetails() {
   const { data, isLoading, error } = useReadContract({
     contract,
     method:
-      "function getOngoingCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
-
 
   if (isLoading)
     return (

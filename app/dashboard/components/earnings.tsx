@@ -5,6 +5,7 @@ import { getContract } from "thirdweb"
 import { polygonAmoy } from "thirdweb/chains"
 import { useActiveAccount, useReadContract } from "thirdweb/react"
 import { client } from "@/app/client"
+import { TopDonators } from "./top-donators"
 
 export function Earnings() {
   const account = useActiveAccount()
@@ -14,8 +15,8 @@ export function Earnings() {
       address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
       chain: polygonAmoy,
     }),
-    method: "function getUserOngoingCampaigns(address _user) view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
-    params: [account?.address],
+    method:"function getUserOngoingCampaigns(address _user) view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    params: [account?.address??''],
   })
 
   const getLastSevenDaysData = () => {
@@ -85,6 +86,9 @@ export function Earnings() {
 
         </div>
 
+    
+                <TopDonators />
+    
     </div>
   )
 }
