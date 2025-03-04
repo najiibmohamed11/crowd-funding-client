@@ -15,7 +15,7 @@ const contract =getContract({
 });
 export function Profile() {
   const account = useActiveAccount()
-  const {mutate:sendTransaction}=useSendTransaction()
+  const {mutate:sendTransaction,error,isPending:isLoading,isSuccess,data:response,failureReason}=useSendTransaction()
 
 
   const { data, isPending } = useReadContract({
@@ -31,9 +31,10 @@ export function Profile() {
   if (!data || data.length === 0) {
     return <div></div>
   }
-
   const lastCampaign = data[data.length - 1];
-
+  console.log('last compaign ',lastCampaign.owner);
+  console.log('owner',account?.address);
+  console.log('failureReason',failureReason);
 
 
   // Function to calculate percentage
@@ -43,6 +44,7 @@ export function Profile() {
     return ((collectedAmount / target) * 100).toFixed(2); // Limit to 2 decimals
   };
   const lastCampaignId=data.length-1;
+  console.log(lastCampaignId);
 
 
   const progress = Number(percentageCalculator(Number(lastCampaign.amountCollected), Number(lastCampaign.target)));
@@ -53,6 +55,8 @@ export function Profile() {
       params: [BigInt(lastCampaignId)],
     });
     sendTransaction(transaction);
+    console.log('error',error)
+    console.log(isSuccess)
   }
   return (
     <Card className="w-full max-w-md p-6 bg-transparent backdrop-blur-sm">
@@ -70,7 +74,7 @@ export function Profile() {
       </div>
 
       {/* Campaign Collection Status */}
-      <h3 className="font-medium mb-6">Your Collection Status</h3>
+      <h3 className="font-medium mb-6">last campaign  colections</h3>
 
       <div className="flex justify-center mb-8">
         <div className="relative w-32 h-32">

@@ -294,7 +294,8 @@ export default function CreateCampaign() {
                 <div className="flex flex-col gap-4">
                   <Button type="submit" size="lg" className="w-full">
                     <Upload className="mr-2 h-4 w-4" />
-                    Launch Campaign
+                    {isUploading||isPending?'launching the comapaign....':' Launch Campaign'}
+                   
                   </Button>
                   <p className="text-xs text-center text-muted-foreground">
                     By creating a campaign, you agree to our Terms of Service

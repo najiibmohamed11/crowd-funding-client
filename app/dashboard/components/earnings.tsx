@@ -1,26 +1,13 @@
 "use client"
-
 import { Line, LineChart, XAxis, YAxis, ResponsiveContainer } from "recharts"
-import { getContract } from "thirdweb"
-import { polygonAmoy } from "thirdweb/chains"
-import { useActiveAccount, useReadContract } from "thirdweb/react"
-import { client } from "@/app/client"
 import { TopDonators } from "./top-donators"
 
-export function Earnings() {
-  const account = useActiveAccount()
-  const { data: campaignData, isPending } = useReadContract({
-    contract: getContract({
-      client,
-      address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-      chain: polygonAmoy,
-    }),
-    method:"function getUserOngoingCampaigns(address _user) view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
-    params: [account?.address??''],
-  })
+export function Earnings({campaignData}) {
 
+  const AllCampaignsDontaors=campaignData.flatMap((campaign)=>campaign.donators);
+  console.log(AllCampaignsDontaors);
   const getLastSevenDaysData = () => {
-    if (!campaignData?.[0]?.donators) return []
+    if (!AllCampaignsDontaors) return []
     
     const now = new Date()
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -35,7 +22,7 @@ export function Earnings() {
       }
     }).reverse()
 
-    campaignData[0].donators.forEach(donation => {
+    AllCampaignsDontaors.forEach(donation => {
       const donationDate = new Date(donation.date)
       if (donationDate >= sevenDaysAgo) {
         const dateStr = donationDate.toISOString().split('T')[0]

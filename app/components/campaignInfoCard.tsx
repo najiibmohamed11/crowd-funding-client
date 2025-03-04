@@ -22,6 +22,8 @@ import { DonatorsModal } from "./donatorsModal";
 import { ShareModal } from "./shareModal";
 import { useParams } from "next/navigation";
 import Web3Avatar from "./web3Avatar";
+import { useActiveAccount } from "thirdweb/react";
+import { SiPolygon } from "react-icons/si";
 
 interface Donator {
   amount: bigint;
@@ -48,6 +50,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   const [isDonateListOpen, setIsDonateListOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const params = useParams();
+  const account = useActiveAccount()
   const id = Number(params.id);
   const handleDonate = (amount: string, comment: string) => {
     console.log(`Donating ${amount} ETH with comment: ${comment}`);
@@ -58,6 +61,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   const RisedAmountPercantageCalculation = () => {
     return (Number(amountCollected) / Number(target)) * 100;
   };
+  const IsThoOwnerHer=owner==account?.address;
   return (
     <Card className="overflow-hidden bg-background border">
       <CardContent className="p-6">
@@ -100,11 +104,13 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           <div className="flex gap-3">
             <Button
               size="lg"
-              className="flex-1"
+              className={`flex-1  ${IsThoOwnerHer?'cursor-not-allowed':''} `}
+              disabled={IsThoOwnerHer}
               onClick={() => setIsModalOpen(true)}
             >
-              <FaEthereum className="mr-2 h-4 w-4" />
-              Back this project
+
+              <SiPolygon className="mr-2 h-4 w-4" />
+            {IsThoOwnerHer?"you can t dont to you'r selfe"  :'Back this project'}
             </Button>
             <Button
               onClick={() => setIsShareModalOpen(true)}
@@ -158,7 +164,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
             </div>
           </div>
         ) : (
-          <div></div>
+          <div>0 donators</div>
         )}
       </CardContent>
       <DonationModal

@@ -14,6 +14,7 @@ import { useActiveAccount, useReadContract } from "thirdweb/react"
 import { getContract } from "thirdweb"
 import { polygonAmoy } from "thirdweb/chains"
 import { client } from '@/app/client'
+import Link from "next/link"
 
 const contract =getContract({
   client,
@@ -43,7 +44,7 @@ export type Campaign = {
 
 export default function DashboardPage() {
   const account = useActiveAccount()
-  const [campaignData, setCampaignData] = useState(null)
+  const [campaignData, setCampaignData] = useState<Campaign[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const { data, isPending} = useReadContract({
@@ -88,9 +89,11 @@ export default function DashboardPage() {
           </div>
           <h1 className="text-2xl font-semibold">Create Your First Campaign</h1>
           <p className="text-muted-foreground">Start your fundraising journey by creating your first campaign</p>
+          <Link href='/dashboard/create-campaign'>
           <Button className="w-full" size="lg">
             Create Campaign
           </Button>
+          </Link>
         </Card>
       </main>
     )
@@ -119,8 +122,8 @@ export default function DashboardPage() {
         <div className="grid lg:grid-cols-[1fr_300px] gap-8 py-8">
           <div className="space-y-8">
             <div className="grid md:grid-cols-[200px_1fr] gap-8">
-              <Overview />
-              <Earnings />
+              <Overview campaigns={data} />
+              <Earnings campaignData={data} />
             </div>
             <Statistics />
           </div>
