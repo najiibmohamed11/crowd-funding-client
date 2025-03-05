@@ -8,17 +8,37 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Copy, ChevronRight, Wallet, Users, Coins, TrendingUp } from 'lucide-react'
+import { AccountAddress, useActiveAccount } from 'thirdweb/react'
+import ConnectWallet from '@/app/components/ConnectWallet'
+import Web3Avatar from '@/app/components/web3Avatar'
 
 const MotionCard = motion(Card)
 
 export default function ModernAnonymousCreatorProfile() {
   const [copiedAddress, setCopiedAddress] = useState(false)
-  const walletAddress = '0x1234...5678'
+  const account = useActiveAccount()
 
+  const walletAddress = account?.address??'please log in'
+  
   const copyAddress = () => {
     navigator.clipboard.writeText(walletAddress)
     setCopiedAddress(true)
     setTimeout(() => setCopiedAddress(false), 2000)
+  }
+
+  if (account?.address == null) {
+    return (
+      <main className="h-[80vh] flex items-center justify-center">
+        <Card className="p-8 max-w-md w-full text-center space-y-4">
+          <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+            <Wallet className="w-6 h-6" />
+          </div>
+          <h1 className="text-2xl font-semibold">Connect Your Wallet</h1>
+          <p className="text-muted-foreground">Connect your wallet to view your dashboard and manage your campaigns</p>
+          <ConnectWallet />
+        </Card>
+      </main>
+    )
   }
 
   return (
@@ -37,6 +57,7 @@ export default function ModernAnonymousCreatorProfile() {
               <AvatarFallback className="text-2xl font-mono bg-gradient-to-br from-purple-400 to-blue-400 text-white">
                 {walletAddress.slice(0, 2)}
               </AvatarFallback>
+              {/* <Web3Avatar address={account.address}/> */}
             </Avatar>
             <div className="text-center md:text-left">
               <motion.div 
@@ -46,7 +67,7 @@ export default function ModernAnonymousCreatorProfile() {
                 className="flex items-center gap-3 bg-white/90 rounded-full px-6 py-3 text-slate-900 shadow-lg"
               >
                 <Wallet className="h-5 w-5 text-purple-600" />
-                <code className="text-sm font-mono">{walletAddress}</code>
+                <code className="text-sm font-mono">{walletAddress.slice(0,7)}...{walletAddress.slice(-4)}</code>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={copyAddress}>
                   <Copy className="h-4 w-4" />
                 </Button>

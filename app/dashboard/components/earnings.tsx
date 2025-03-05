@@ -72,9 +72,7 @@ export function Earnings({campaignData}) {
 </ResponsiveContainer>
 
         </div>
-
-    
-                <TopDonators />
+  <TopDonators donators={AllCampaignsDontaors} />
     
     </div>
   )

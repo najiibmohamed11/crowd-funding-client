@@ -125,7 +125,7 @@ export default function DashboardPage() {
               <Overview campaigns={data} />
               <Earnings campaignData={data} />
             </div>
-            <Statistics />
+            <Statistics campaignData={data} />
           </div>
           <div className="space-y-8">
             <Profile />
