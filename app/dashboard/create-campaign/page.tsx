@@ -21,18 +21,13 @@ import {
 } from "@/components/ui/card";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { getContract, prepareContractCall } from "thirdweb";
-import { client } from "@/app/client";
+import { client,contract } from "@/app/client";
 import { polygonAmoy } from "thirdweb/chains";
 import ConnectWallet from "@/app/components/ConnectWallet";
 
 import { useRouter } from "next/navigation";
 
 
-const contract = getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
 
 export default function CreateCampaign() {
   const [image, setImage] = useState<string | null>(null);
@@ -123,15 +118,21 @@ export default function CreateCampaign() {
       const deadline = convertDateToTimestamp(date);
       const transaction = prepareContractCall({
         contract,
-        method: "function createCampaign(address _owner, string _title, string _story, uint256 _target, uint256 _deadline, string _image) returns (uint256)",
+        method:"function createCampaign(address _owner, string _title, string _story, uint256 _target, uint256 _deadline, string _image) returns (uint256)",
         params: [account.address, title, story, BigInt(target), BigInt(deadline), uploadedImageUrl],
       });
+      
   
       sendTransaction(transaction);
     } catch (error) {
       console.log("error during submission", error);
     }
   };
+    // Get tomorrow's date in YYYY-MM-DD format
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split("T")[0];
+  
 
   return (
     <>
@@ -218,8 +219,10 @@ export default function CreateCampaign() {
                         onChange={(e) => {
                           seDate(e.target.value);
                         }}
+                        min={minDate}
                         name="deadline"
                         type="date"
+
                         className="pl-10 h-12 border-2 hover:border-primary/50 transition-colors"
                       />
                     </div>

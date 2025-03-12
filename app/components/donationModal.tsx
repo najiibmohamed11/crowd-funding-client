@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { motion } from "framer-motion"
 import { getContract, prepareContractCall } from "thirdweb"
-import { client } from "../client"
+import { contract } from "../client"
 import { polygonAmoy } from "thirdweb/chains"
 import { useSendTransaction } from "thirdweb/react"
 import { useParams } from 'next/navigation'
@@ -20,18 +20,14 @@ interface DonationModalProps {
   onDonate: (amount: string, comment: string) => void
 }
 
-const contract = getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
+
 
 export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps) {
   const [maticAmount, setMaticAmount] = useState('')
   const [usdAmount, setUsdAmount] = useState('')
   const [comment, setComment] = useState('')
   const [maticPrice, setMaticPrice] = useState(0)
-  const {mutate: sendTransaction, failureReason, error, isError, isPending} = useSendTransaction()
+  const {mutate: sendTransaction, failureReason, error, isSuccess, isPending} = useSendTransaction()
   const params = useParams()
   const id = BigInt(params.id as string)
   
@@ -66,18 +62,24 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
   const handleDonate = () => {
     const transaction = prepareContractCall({
       contract,
-      method: "function donate(uint256 _id, string _comment, string _date) payable",
+      method:"function donate(uint256 _campaignId, string _comment, string _date) payable",
       params: [id, comment, now],
       value: parseEther(maticAmount.toString()),
     });
     sendTransaction(transaction);
+ 
   };
-
+  useEffect(() => {
+    if (isSuccess) {
+      onClose();
+    }
+  }, [isSuccess, onClose]);
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white border-gray-200 dark:border-none shadow-xl dark:shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-bold">
+          <DialogTitle  className="text-3xl font-bold">
             Back this project
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-400">

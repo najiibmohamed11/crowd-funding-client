@@ -1,23 +1,18 @@
 "use client";
 import React from "react";
 import { getContract } from "thirdweb";
-import { client } from "../client";
+import { client,contract } from "../client";
 import { polygonAmoy } from "thirdweb/chains";
 import { useReadContract } from "thirdweb/react";
 import { CampaignCard } from "./campaignCard";
 import SkeletonLoader from "./SkeletonLoader";
 
-const contract = getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
 
 const CampaignList = () => {
   const { data, isLoading, error } = useReadContract({
     contract,
     method:
-      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    "function getOngoingCampaigns() view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
 

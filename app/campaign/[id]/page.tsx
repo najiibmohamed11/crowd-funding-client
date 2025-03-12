@@ -11,18 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Share2, MessageCircle } from "lucide-react";
 import Header from "@/app/components/header";
 import CampaignInfoCard from "@/app/components/campaignInfoCard";
-import { client } from "@/app/client";
-import { getContract, readContract } from "thirdweb";
-import { polygonAmoy } from "thirdweb/chains";
+import { contract } from "@/app/client";
 import { useReadContract } from "thirdweb/react";
 import { useParams } from "next/navigation";
 import Web3Avatar from "@/app/components/web3Avatar";
 
-const contract = getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
+
 
 export default function CampaignDetails() {
   const params = useParams();
@@ -31,7 +25,7 @@ export default function CampaignDetails() {
   const { data, isLoading, error } = useReadContract({
     contract,
     method:
-      "function getCampaigns() view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    "function getOngoingCampaigns() view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
 
@@ -57,6 +51,8 @@ export default function CampaignDetails() {
         <div className="text-center py-10">No data available.</div>
       </div>
     );
+    console.log(data);
+    console.log(id);
 
   const campaign = data[id];
   if (!campaign)

@@ -72,10 +72,10 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           <div>
             <div className="flex items-baseline justify-between">
               <span className="text-3xl font-semibold text-foreground">
-                {amountCollected.toString()} pol
+                {amountCollected.toString()} MATIC
               </span>
               <span className="text-sm text-muted-foreground">
-                raised of {target.toString()} ETH goal
+                raised of {target.toString()} MATIC goal
               </span>
             </div>
             <div className="relative mt-3">

@@ -13,14 +13,10 @@ import { useEffect, useState } from "react"
 import { useActiveAccount, useReadContract } from "thirdweb/react"
 import { getContract } from "thirdweb"
 import { polygonAmoy } from "thirdweb/chains"
-import { client } from '@/app/client'
+import { client ,contract} from '@/app/client'
 import Link from "next/link"
 
-const contract =getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
+
 export type Donator = {
   donator: string
   amount: bigint
@@ -50,7 +46,7 @@ export default function DashboardPage() {
   const { data, isPending} = useReadContract({
     contract: contract,
     method:
-      "function getUserOngoingCampaigns(address _user) view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    "function getUserOngoingCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [account?.address??''],
   })
 
@@ -122,10 +118,10 @@ export default function DashboardPage() {
         <div className="grid lg:grid-cols-[1fr_300px] gap-8 py-8">
           <div className="space-y-8">
             <div className="grid md:grid-cols-[200px_1fr] gap-8">
-              <Overview campaigns={data} />
-              <Earnings campaignData={data} />
+              <Overview campaigns={campaignData} />
+              <Earnings campaignData={campaignData} />
             </div>
-            <Statistics campaignData={data} />
+            <Statistics campaignData={campaignData} />
           </div>
           <div className="space-y-8">
             <Profile />

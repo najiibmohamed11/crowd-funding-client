@@ -5,14 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import Web3Avatar from "@/app/components/web3Avatar"
 import { useActiveAccount, useReadContract, useSendTransaction } from "thirdweb/react"
-import { client } from '@/app/client'
+import { contract} from '@/app/client'
 import { getContract, prepareContractCall } from 'thirdweb'
 import { polygonAmoy } from 'thirdweb/chains'
-const contract =getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
+
 export function Profile() {
   const account = useActiveAccount()
   const {mutate:sendTransaction,error,isPending:isLoading,isSuccess,data:response,failureReason}=useSendTransaction()
@@ -20,7 +16,8 @@ export function Profile() {
 
   const { data, isPending } = useReadContract({
     contract: contract,
-    method:"function getUserOngoingCampaigns(address _user) view returns ((address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    method:
+    "function getUserOngoingCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [account?.address],
   });
 
