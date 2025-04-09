@@ -24,7 +24,7 @@ export default function Header() {
         </Link>
 
         {/* Search Bar */}
-        <div className="  w-[320px] lg:flex">
+        <div className="  w-[320px] lg:flex  hidden  ">
           <div className="relative flex w-full items-center">
             <button
               onClick={() =>
@@ -37,7 +37,7 @@ export default function Header() {
               <Input
                 type="search"
                 placeholder="Do fundraise now"
-                className="w-full rounded-full border-0 bg-gray-50/90 py-2 pl-4 pr-16 text-base shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-100"
+                className="w-full  rounded-full border-0 bg-gray-50/90 py-2 pl-4 pr-16 text-base shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-100"
                 readOnly
               />
               <div className="absolute right-2 flex items-center gap-1 rounded-md bg-white/80 px-2 py-1 text-xs text-gray-500">

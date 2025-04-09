@@ -51,10 +51,10 @@ export default function CampaignDetails() {
         <div className="text-center py-10">No data available.</div>
       </div>
     );
-    console.log(data);
-    console.log(id);
 
-  const campaign = data[id];
+
+  const campaign = data.find((campaign:any)=> Number(campaign.id)==id);
+  console.log(campaign.title);
   if (!campaign)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -67,8 +67,10 @@ export default function CampaignDetails() {
     target: Number(campaign.target),
     amountCollected: Number(campaign.amountCollected) / 1e18,
     deadline: Number(campaign.deadline),
-    donators: [...campaign.donators],
+    donators: [...campaign.donators??[]],
   };
+  console.log('sheeko sheeko');
+  console.log(new Date(formattedCampaigns.deadline * 1000));
 
   return (
     <div className="flex flex-col justify-around items-start mx-4 sm:mx-12 lg:mx-24 pb-16">

@@ -30,6 +30,7 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
   const {mutate: sendTransaction, failureReason, error, isSuccess, isPending} = useSendTransaction()
   const params = useParams()
   const id = BigInt(params.id as string)
+  console.log(id)
   
   useEffect(() => {
     // Fetching MATIC price instead of ETH
@@ -67,7 +68,6 @@ export function DonationModal({ isOpen, onClose, onDonate }: DonationModalProps)
       value: parseEther(maticAmount.toString()),
     });
     sendTransaction(transaction);
- 
   };
   useEffect(() => {
     if (isSuccess) {

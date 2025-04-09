@@ -1,5 +1,5 @@
-"use client";
 
+'use client'
 
 import { CampaignCard } from "./components/campaignCard";
 import { BottomNavigation } from "./components/buttomNavigations";

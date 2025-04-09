@@ -99,7 +99,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           </div>
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>{donators.length} backers</span>
-            <span>15 days left</span>
+            <span>{deadline.toString()}</span>
           </div>
           <div className="flex gap-3">
             <Button

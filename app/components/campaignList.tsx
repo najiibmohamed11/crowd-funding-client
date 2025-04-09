@@ -71,7 +71,7 @@ const CampaignList = () => {
         {formattedCampaigns.map((campaign, index) => (
           <CampaignCard
             key={index}
-            id={index.toString()}
+            id={campaign.id}
             owner={campaign.owner}
             title={campaign.title}
             story={campaign.story}

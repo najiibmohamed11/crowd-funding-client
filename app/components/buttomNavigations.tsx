@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { HomeIcon as House, Search, Bell, Telescope } from 'lucide-react'
+import { tap } from 'node:test/reporters'
 
 export function BottomNavigation() {
   const [activeTab, setActiveTab] = useState('home')
@@ -11,6 +12,14 @@ export function BottomNavigation() {
     { id: 'explore', label: 'Explore', icon: Telescope },
     { id: 'notifications', label: 'Notifications', icon: Bell },
   ]
+
+
+
+  function SearchModelTriger(){
+      document.dispatchEvent(new KeyboardEvent("keydown",{ key: "k", metaKey: true }))
+    
+    
+  }
 
   return (
     <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
@@ -22,7 +31,14 @@ export function BottomNavigation() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if(tab.id==='explore'){
+                    SearchModelTriger()
+                  }else{
+
+                    setActiveTab(tab.id)
+                  }
+                }}
                 className="relative flex items-center gap-2 rounded-full px-4 py-1.5 transition-colors"
                 style={{
                   backgroundColor: isActive ? 'white' : 'transparent',

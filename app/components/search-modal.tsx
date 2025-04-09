@@ -63,7 +63,7 @@ export function SearchModal() {
   if (isLoading&&open)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center py-10">Loading campaigns...</div>
+        <div className="text-center py-10">...</div>
       </div>
     );
 
