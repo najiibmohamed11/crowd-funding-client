@@ -5,7 +5,7 @@ import { Command, Search } from "lucide-react";
 import ConnectWallet from "./ConnectWallet";
 import Link from "next/link";
 import { SearchModal } from "./search-modal";
-
+import logo from "@/public/light-logo.svg"
 export default function Header() {
   return (
     <div className="container flex h-16 items-center justify-between gap-4 ">
@@ -14,7 +14,7 @@ export default function Header() {
         <Link href="/">
           <div className="flex-shrink-0">
             <Image
-              src="/light-logo.svg"
+              src={logo}
               alt="Logo"
               width={40}
               height={40}

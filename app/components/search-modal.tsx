@@ -14,7 +14,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useReadContract } from "thirdweb/react";
-import { client } from "../client";
+import { client, contract } from "../client";
 import { getContract } from "thirdweb";
 import { polygonAmoy } from "thirdweb/chains";
 
@@ -27,11 +27,6 @@ interface Campaign {
   goal: number;
 }
 
-const contract = getContract({
-  client,
-  address: "0xF0925dCe1A9FDC060ff8b9abD9fb8eE8E7D4765c",
-  chain: polygonAmoy,
-});
 
 export function SearchModal() {
   const [open, setOpen] = React.useState(false);
