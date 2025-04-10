@@ -22,10 +22,9 @@ import {
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { getContract, prepareContractCall } from "thirdweb";
 import { client,contract } from "@/app/client";
-import { polygonAmoy } from "thirdweb/chains";
 import ConnectWallet from "@/app/components/ConnectWallet";
-
-import { useRouter } from "next/navigation";
+import { SiPolygon } from 'react-icons/si' // Using SiPolygon from react-icons
+import { useRouter,redirect } from "next/navigation";
 
 
 
@@ -124,6 +123,7 @@ export default function CreateCampaign() {
       
   
       sendTransaction(transaction);
+      redirect('/')
     } catch (error) {
       console.log("error during submission", error);
     }
@@ -193,7 +193,7 @@ export default function CreateCampaign() {
                     </label>
                     <div className="relative">
                       <div className="absolute left-3 top-3 flex h-5 w-5 items-center justify-center">
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <SiPolygon className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <Input
                         onChange={(e) => {
@@ -202,7 +202,7 @@ export default function CreateCampaign() {
                         name="target"
                         type="number"
                         placeholder="0.00"
-                        className="pl-10 h-12 border-2 hover:border-primary/50 transition-colors"
+                        className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none  pl-10 h-12 border-2 hover:border-primary/50 transition-colors"
                       />
                     </div>
                   </div>

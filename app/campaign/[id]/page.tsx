@@ -70,7 +70,13 @@ export default function CampaignDetails() {
     donators: [...campaign.donators??[]],
   };
   console.log('sheeko sheeko');
-  console.log(new Date(formattedCampaigns.deadline * 1000));
+  const now=new Date();
+  const expireDate=new Date(formattedCampaigns.deadline*1000 );
+  const oneDay = 24 * 60 * 60 * 1000; // milliseconds in one day
+  const daysLeft = Math.ceil((expireDate - now) / oneDay);
+
+
+  console.log(daysLeft);
 
   return (
     <div className="flex flex-col justify-around items-start mx-4 sm:mx-12 lg:mx-24 pb-16">
@@ -95,7 +101,7 @@ export default function CampaignDetails() {
               title={formattedCampaigns.title}
               target={formattedCampaigns.target}
               amountCollected={formattedCampaigns.amountCollected}
-              deadline={formattedCampaigns.deadline}
+              deadline={daysLeft}
               donators={formattedCampaigns.donators}
               owner={campaign.owner}
             />
