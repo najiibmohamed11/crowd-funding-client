@@ -46,7 +46,7 @@ export default function DashboardPage() {
   const { data, isPending} = useReadContract({
     contract: contract,
     method:
-    "function getUserOngoingCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    "function getUserCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [account?.address??''],
   })
 

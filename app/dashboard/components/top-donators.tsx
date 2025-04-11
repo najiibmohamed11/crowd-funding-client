@@ -6,11 +6,11 @@ export function TopDonators({ donators }) {
     <div className="rounded-2xl p-6">
       <h2 className="text-xl font-medium mb-6">Top 10 Donators</h2>
       <div className="space-y-6">
-        {donators.map((donator) => {
+        {donators.map((donator,index) => {
           const date = new Date(donator.date).toLocaleDateString('en-GB'); // Format as DD/MM/YYYY
 
           return (
-            <div key={donator.name} className="flex items-center justify-between">
+            <div key={index} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
               <Web3Avatar address={donator.donator} /> {/* Use Web3Avatar for the avatar */}
                 <div>
