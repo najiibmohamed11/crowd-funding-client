@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Command, Search } from "lucide-react";
 import ConnectWallet from "./ConnectWallet";
@@ -36,8 +35,8 @@ export default function Header() {
             >
               <Input
                 type="search"
-                placeholder="Do fundraise now"
-                className="w-full  rounded-full border-0 bg-gray-50/90 py-2 pl-4 pr-16 text-base shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-100"
+                placeholder="Search documentation..."
+                className="w-full rounded-md border-0 bg-gray-100 py-2 pl-4 pr-16 text-base shadow-sm ring-1 ring-gray-200 transition-all placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-gray-300"
                 readOnly
               />
               <div className="absolute right-2 flex items-center gap-1 rounded-md bg-white/80 px-2 py-1 text-xs text-gray-500">
@@ -55,7 +54,14 @@ export default function Header() {
         {/* <Button size="lg" className="">
           Start a campaign
         </Button> */}
+
         <ConnectWallet />
+        <button
+          // variant="outline"
+          className="rounded-md border p-3 border-gray-200 bg-black text-white  "
+        >
+          <Link href="/dashboard">Dashboard</Link>
+        </button>
       </div>
     </div>
   );

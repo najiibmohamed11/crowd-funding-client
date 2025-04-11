@@ -246,7 +246,7 @@ export default function CampaignDetails() {
                   </Button>
 
                   <div className="flex gap-3">
-                    <Button
+                    {/* <Button
                       variant="outline"
                       className="flex-1 border-slate-200 text-slate-800 hover:bg-slate-50"
                       onClick={copyToClipboard}
@@ -264,7 +264,7 @@ export default function CampaignDetails() {
                     <Button variant="outline" className="flex-1 border-slate-200 text-slate-800 hover:bg-slate-50">
                       <Heart className="mr-2 h-4 w-4 text-rose-500" />
                       Save
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </CardContent>

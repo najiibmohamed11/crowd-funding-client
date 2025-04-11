@@ -103,8 +103,9 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           </div>
           <div className="flex gap-3">
             <Button
+
               size="lg"
-              className={`flex-1  ${IsThoOwnerHer?'cursor-not-allowed':''} `}
+              className={`flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white hover:text-white  ${IsThoOwnerHer?'cursor-not-allowed ':''} `}
               disabled={IsThoOwnerHer}
               onClick={() => setIsModalOpen(true)}
             >

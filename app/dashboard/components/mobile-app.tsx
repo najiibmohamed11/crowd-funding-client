@@ -1,4 +1,6 @@
-import Image from "next/image"
+import Image from "next/image";
+import Link from "next/link";
+
 export function MobileApp() {
     return (
       <div className="bg-[#FF6B6B] rounded-2xl p-6 text-white relative overflow-hidden">
@@ -6,9 +8,9 @@ export function MobileApp() {
           <h3 className="text-xl font-medium mb-4">
             Do you want exchange ?
           </h3>
-          <button className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100">
+          <Link href='https://client.taranapp.com/' className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100">
             exchange
-          </button>
+          </Link>
         </div>
         <Image
         width={150}

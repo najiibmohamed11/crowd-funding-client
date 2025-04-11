@@ -108,12 +108,7 @@ export default function DashboardPage() {
   return (
     <main className="container mx-auto px-4">
       <div className="max-w-[1400px] mx-auto">
-        <header className="flex justify-between items-center mb-8">
-          <h1 className="text-xl font-medium">Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <ConnectWallet />
-          </div>
-        </header>
+
 
         <div className="grid lg:grid-cols-[1fr_300px] gap-8 py-8">
           <div className="space-y-8">

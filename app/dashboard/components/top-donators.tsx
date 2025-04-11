@@ -1,6 +1,6 @@
 import Web3Avatar from '@/app/components/web3Avatar';
 import { Mail, Gift, Heart, X, MoreHorizontal } from 'lucide-react'
-
+import { SiPolygon } from 'react-icons/si';
 export function TopDonators({ donators }) {
   return (
     <div className="rounded-2xl p-6">
@@ -17,8 +17,8 @@ export function TopDonators({ donators }) {
                   <div className="font-medium flex items-center gap-1">
                     {donator.donator.slice(0, 6)}...{donator.donator.slice(-4)}
                   </div>
-                  <div className="text-gray-500">
-                    $ {Number(donator.amount) / 1e18}
+                  <div className="text-gray-500 flex items-center gap-1">
+                    <SiPolygon/> {Number(donator.amount) / 1e18}
                   </div>
                 </div>
               </div>

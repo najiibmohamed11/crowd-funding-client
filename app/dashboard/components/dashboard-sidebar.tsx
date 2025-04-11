@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { LayoutGrid, FileText, BarChart3, Users, Settings } from 'lucide-react'
 import Link from 'next/link'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 export function DashboardSidebar() {
   const pathname = usePathname()
@@ -11,16 +12,24 @@ export function DashboardSidebar() {
   const links = [
     { href: '/dashboard', icon: LayoutGrid },
     { href: '/dashboard/create-campaign', icon: FileText },
-    { href: '/dashboard/analytics', icon: BarChart3 }, // Changed empty href to a valid one
+    // { href: '/dashboard/analytics', icon: BarChart3 }, // Changed empty href to a valid one
     { href: '/dashboard/profile', icon: Users },
     { href: '/dashboard/settings', icon: Settings }, // Changed empty href to a valid one
   ]
 
   return (
     <aside className="w-[80px] min-h-screen bg-transparent flex flex-col items-center py-8">
-      <div className="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center text-xl font-semibold mb-8">
-        S
-      </div>
+       <Link href="/">
+          <div className="flex-shrink-0">
+            <Image
+              src='/light-logo.svg'
+              alt="Logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+            />
+          </div>
+        </Link>
       <nav className="flex flex-col gap-12 py-6">
         {links.map(({ href, icon: Icon }) => (
           <Link 

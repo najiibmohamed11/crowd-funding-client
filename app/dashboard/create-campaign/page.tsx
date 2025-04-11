@@ -136,15 +136,10 @@ export default function CreateCampaign() {
 
   return (
     <>
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-xl font-medium">Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <ConnectWallet />
-        </div>
-      </header>
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 p-4 md:p-8">
+   
+      <div className="min-h-screen bg-gradient-to-br  p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border-0 shadow-lg bg-gray-50 backdrop-blur-sm">
             <CardHeader>
               <div className="space-y-2">
                 <CardTitle className="text-2xl font-bold">

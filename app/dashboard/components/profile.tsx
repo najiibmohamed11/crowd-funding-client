@@ -12,6 +12,7 @@ import {
 import { contract } from "@/app/client";
 import { prepareContractCall } from "thirdweb";
 import { useEffect } from "react";
+import { SiPolygon } from "react-icons/si";
 
 export function Profile() {
   const account = useActiveAccount();
@@ -147,14 +148,14 @@ export function Profile() {
       <div className="space-y-3 mb-6">
         <div className="flex justify-between items-center">
           <span className="text-gray-500">Current status:</span>
-          <span className="text-red-500 font-medium">
-            $ {(Number(lastCampaign.amountCollected) / 1e18).toFixed(2)}
+          <span className="text-red-500 font-medium flex items-center gap-1">
+          <SiPolygon/>  {(Number(lastCampaign.amountCollected) / 1e18).toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-gray-500">You need:</span>
-          <span className="font-medium">
-            $ {Number(lastCampaign.target).toFixed(2)}
+          <span className="font-medium flex justify-between items-cente gap-1">
+          <SiPolygon/>  {Number(lastCampaign.target).toFixed(2)}
           </span>
         </div>
       </div>

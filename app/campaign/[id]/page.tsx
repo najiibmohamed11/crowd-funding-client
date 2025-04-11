@@ -76,8 +76,6 @@ export default function CampaignDetails() {
   const daysLeft = Math.ceil((expireDate - now) / oneDay);
 
 
-  console.log(daysLeft);
-
   return (
     <div className="flex flex-col justify-around items-start mx-4 sm:mx-12 lg:mx-24 pb-16">
       <Header />

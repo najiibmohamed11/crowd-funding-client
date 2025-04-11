@@ -23,6 +23,9 @@ export function Overview({ campaigns }) {
   const donationAmount = latestDonation.amount
     ? (parseFloat(latestDonation.amount) / 1e18).toFixed(0)
     : "0";
+    // const onlyActiveCampaigns=campaigns.filter((campaign)=>campaign.isActive==true)
+    // console.log("active campaigns")
+    // console.log(onlyActiveCampaigns)
 
   return (
     <div className="space-y-4">
@@ -50,7 +53,7 @@ export function Overview({ campaigns }) {
         )}
         <div className="bg-[#4318FF] rounded-2xl h-[250px] text-white w-[200px]">
           <div className="flex flex-col justify-center items-center py-2">
-            <p className="text-lg mb-4">Active Campaigns</p>
+            <p className="text-lg mb-4">all campaign</p>
             <span className="text-5xl font-bold flex justify-end items-center gap-2">
               <TfiAnnouncement />
               {campaigns.length}
