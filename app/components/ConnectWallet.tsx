@@ -3,6 +3,8 @@ import { ConnectButton, lightTheme } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
 import { client } from "../client";
 
+import { polygonAmoy } from "thirdweb/chains";
+
 const wallets = [
   createWallet("io.metamask"),
   createWallet("com.coinbase.wallet"),
@@ -16,6 +18,7 @@ export default function ConnectWallet() {
     <ConnectButton
       client={client}
       wallets={wallets}
+      chain={polygonAmoy}
       theme={lightTheme({
         colors: { accentText: "hsl(199, 95%, 71%)" },
       })}
