@@ -18,7 +18,7 @@ import {
 import { BsRocketTakeoffFill } from "react-icons/bs";
 
 import { DonationModal } from "@/app/components/donationModal";
-import { DonatorsModal } from "./donatorsModal";
+import  DonatorsModal  from "./donatorsModal";
 import { ShareModal } from "./shareModal";
 import { useParams } from "next/navigation";
 import Web3Avatar from "./web3Avatar";
@@ -83,17 +83,17 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
                 value={RisedAmountPercantageCalculation()}
                 className="h-2"
               />
-              <div 
+              <div
                 className="absolute top-1/2 -translate-y-1/2 transition-all duration-300"
-                style={{ 
+                style={{
                   left: `${Math.min(RisedAmountPercantageCalculation(), 97)}%`,
-                  transform: `translate(-50%, -50%)` 
+                  transform: `translate(-50%, -50%)`,
                 }}
               >
-                      <BsRocketTakeoffFill   className="h-4 w-4 text-primary  " 
-                  style={{ transform: 'rotate(45deg)' }} />
-
-
+                <BsRocketTakeoffFill
+                  className="h-4 w-4 text-primary  "
+                  style={{ transform: "rotate(45deg)" }}
+                />
               </div>
             </div>
           </div>
@@ -103,15 +103,17 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           </div>
           <div className="flex gap-3">
             <Button
-
               size="lg"
-              className={`flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white hover:text-white  ${IsThoOwnerHer?'cursor-not-allowed ':''} `}
+              className={`flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white hover:text-white  ${
+                IsThoOwnerHer ? "cursor-not-allowed " : ""
+              } `}
               disabled={IsThoOwnerHer}
               onClick={() => setIsModalOpen(true)}
             >
-
               <SiPolygon className="mr-2 h-4 w-4" />
-            {IsThoOwnerHer?"you can t dont to you'r selfe"  :'Back this project'}
+              {IsThoOwnerHer
+                ? "you can t dont to you'r selfe"
+                : "Back this project"}
             </Button>
             <Button
               onClick={() => setIsShareModalOpen(true)}
@@ -125,7 +127,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
         {donators.length > 0 ? (
           <div>
             <div className="mt-8 space-y-4">
-              {donators.map((donator, index) => (
+              {donators.slice(-3).map((donator, index) => (
                 <div
                   key={index}
                   className="flex items-start gap-4 border-b last:border-b-0 pb-4 last:pb-0"
@@ -143,7 +145,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
                         variant="secondary"
                         className="bg-blue-100 dark:bg-blue-500 text-blue-800 dark:text-white"
                       >
-                        {Number(donator.amount) / 1e18} pol
+                        {Number(donator.amount) / 1e18} MATIC
                       </Badge>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">
@@ -153,19 +155,23 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
                 </div>
               ))}
             </div>
-            <div className="mt-6 text-center">
-              <Button
-                onClick={() => setIsDonateListOpen(true)}
-                variant="outline"
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Show More
-              </Button>
-            </div>
+        
+              <div className="mt-6 text-center">
+                <Button
+                  onClick={() => setIsDonateListOpen(true)}
+                  variant="outline"
+                  className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  Show More
+                </Button>
+              </div>
+  
           </div>
         ) : (
-          <div>0 donators</div>
+          <div className="text-center flex justify-center items-center mt-4">
+            no backers
+          </div>
         )}
       </CardContent>
       <DonationModal

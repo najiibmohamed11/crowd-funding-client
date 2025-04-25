@@ -5,6 +5,7 @@ import ConnectWallet from "./ConnectWallet";
 import Link from "next/link";
 import { SearchModal } from "./search-modal";
 import logo from "@/public/light-logo.svg"
+import { Button } from "@/components/ui/button";
 export default function Header() {
   return (
     <div className="container flex h-16 items-center justify-between gap-4 ">
@@ -50,19 +51,15 @@ export default function Header() {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-4">
-        {/* <Button size="lg" className="">
-          Start a campaign
-        </Button> */}
-
-        <ConnectWallet />
-        <button
-          // variant="outline"
-          className="rounded-md border p-3 border-gray-200 bg-black text-white  "
-        >
-          <Link href="/dashboard">Dashboard</Link>
-        </button>
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+          <ConnectWallet />
+          <Link href="/dashboard">
+            <Button className="h-10 rounded-md bg-black px-5 text-sm font-medium text-white hover:bg-black/90">
+              Dashboard
+            </Button>
+          </Link>
+        </div>
       </div>
-    </div>
   );
 }

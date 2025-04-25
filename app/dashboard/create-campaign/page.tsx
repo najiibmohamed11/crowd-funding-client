@@ -102,7 +102,11 @@ export default function CreateCampaign() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!account?.address || !title || !story || !target || !date || !image) {
+    if (!account?.address) {
+      alert("Please connect your wallet");
+      return;
+    }
+    if ( !title || !story || !target || !date || !image) {
       alert("Please fill in all fields");
       return;
     }
@@ -123,7 +127,7 @@ export default function CreateCampaign() {
       
   
       sendTransaction(transaction);
-      redirect('/')
+      router.push('/');
     } catch (error) {
       console.log("error during submission", error);
     }
