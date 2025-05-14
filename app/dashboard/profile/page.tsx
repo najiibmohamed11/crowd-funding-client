@@ -54,7 +54,7 @@ export default function ModernAnonymousCreatorProfile() {
       method:
         "function getExpiredCampaigns() view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
       params: [],
-      enabled: !!account?.address,
+    
     });
 
   // Filter expired campaigns for current user
@@ -62,8 +62,7 @@ export default function ModernAnonymousCreatorProfile() {
     if (allExpiredCampaigns && account?.address) {
       const userExpiredCampaigns = allExpiredCampaigns.filter(
         (campaign) =>
-          campaign.owner.toLowerCase() === account.address.toLowerCase()
-      );
+          campaign.owner.toLowerCase() === account.address.toLowerCase());
       setPastCampaigns(userExpiredCampaigns);
       setIsLoadingPast(false);
     }
@@ -330,12 +329,7 @@ export default function ModernAnonymousCreatorProfile() {
                               </div>
                             </CardContent>
                             <CardFooter>
-                              <Link
-                                href={`/campaign/${campaign.title
-                                  .replace(/\s+/g, "-")
-                                  .toLowerCase()}`}
-                                className="w-full"
-                              >
+                            
                                 <Link href={`campaign-details/${campaign.id}`}>
                                   <Button
                                     variant="outline"
@@ -345,7 +339,6 @@ export default function ModernAnonymousCreatorProfile() {
                                     <ChevronRight className="w-4 h-4 ml-2" />
                                   </Button>
                                 </Link>
-                              </Link>
                             </CardFooter>
                           </MotionCard>
                         );
@@ -423,12 +416,7 @@ export default function ModernAnonymousCreatorProfile() {
                                 </div>
                               </CardContent>
                               <CardFooter>
-                                <Link
-                                  href={`/campaign/${campaign.title
-                                    .replace(/\s+/g, "-")
-                                    .toLowerCase()}`}
-                                  className="w-full"
-                                >
+                             <Link href={`campaign-details/${campaign.id}`}>
                                   <Button
                                     variant="outline"
                                     className="w-full bg-white border-slate-200 text-slate-900 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-300"

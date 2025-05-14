@@ -55,14 +55,14 @@ export function Profile() {
     }
   }, [isSuccess, refetchOngoing, refetchAll]);
 
-  if (isPending | allpending) {
+  if (isPending || allpending) {
     return <div>Loading...</div>;
   }
 
   if (!data || data.length === 0 || !allData) {
     return <div></div>;
   }
-  console.log(allData);
+  
   const lastCampaign =
     allData[allData.length - 1].isActive == false
       ? allData[allData.length - 1]

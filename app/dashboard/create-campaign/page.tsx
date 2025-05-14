@@ -19,7 +19,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { useActiveAccount, useSendAndConfirmTransaction, useSendTransaction } from "thirdweb/react";
 import { getContract, prepareContractCall } from "thirdweb";
 import { client,contract } from "@/app/client";
 import ConnectWallet from "@/app/components/ConnectWallet";
@@ -39,11 +39,11 @@ export default function CreateCampaign() {
   const [imageUrl, setImageUrl] = useState<string>(""); // Store Cloudinary URL
   const router=useRouter()
   const {
-    mutate: sendTransaction,
+    mutateAsync: sendTransaction,
     isPending,
     isError,
     isSuccess,
-  } = useSendTransaction();
+  } = useSendAndConfirmTransaction();
   // Simulate form completion progress
 
 
@@ -125,8 +125,8 @@ export default function CreateCampaign() {
         params: [account.address, title, story, BigInt(target), BigInt(deadline), uploadedImageUrl],
       });
       
-  
-      sendTransaction(transaction);
+    const receipt =await  sendTransaction(transaction);
+    console.log(receipt.blockHash);
       router.push('/');
     } catch (error) {
       console.log("error during submission", error);
@@ -221,7 +221,6 @@ export default function CreateCampaign() {
                         min={minDate}
                         name="deadline"
                         type="date"
-
                         className="pl-10 h-12 border-2 hover:border-primary/50 transition-colors"
                       />
                     </div>

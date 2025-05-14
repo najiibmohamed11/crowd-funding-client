@@ -54,7 +54,6 @@ export default function CampaignDetails() {
 
 
   const campaign = data.find((campaign:any)=> Number(campaign.id)==id);
-  console.log(campaign.title);
   if (!campaign)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -69,7 +68,6 @@ export default function CampaignDetails() {
     deadline: Number(campaign.deadline),
     donators: [...campaign.donators??[]],
   };
-  console.log('sheeko sheeko');
   const now=new Date();
   const expireDate=new Date(formattedCampaigns.deadline*1000 );
   const oneDay = 24 * 60 * 60 * 1000; // milliseconds in one day

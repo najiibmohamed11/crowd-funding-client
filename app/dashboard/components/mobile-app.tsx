@@ -8,9 +8,14 @@ export function MobileApp() {
           <h3 className="text-xl font-medium mb-4">
             Do you want exchange ?
           </h3>
-          <Link href='https://client.taranapp.com/' className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100">
+      <a
+          href="https://client.taranapp.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100"
+        >
             exchange
-          </Link>
+          </a>
         </div>
         <Image
         width={150}

@@ -109,7 +109,7 @@ export default function CampaignDetails() {
       <div className="max-w-6xl mx-auto">
         {/* Back button */}
         <Link
-          href="/dashboard"
+          href="/dashboard/profile"
           className="inline-flex items-center text-sm text-slate-600 hover:text-primary mb-6 transition-colors"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -122,9 +122,9 @@ export default function CampaignDetails() {
             <div className="relative rounded-2xl overflow-hidden bg-white shadow-lg">
               {/* Campaign Status Badge */}
               <div className="absolute top-4 right-4 z-10">
-                <Badge className={`${isPaused ? "bg-amber-500" : "bg-green-500"} text-white px-3 py-1`}>
-                  {isPaused ? "Paused" : "Active"}
-                </Badge>
+                {deadline==0&&<Badge className={`${!campaign.isActive  ? "bg-amber-500" : "bg-green-500"} text-white px-3 py-1`}>
+                  {!campaign.isActive ? "Paused" : "Active"}
+                </Badge>}
               </div>
 
               {/* Campaign Image */}
@@ -222,7 +222,9 @@ export default function CampaignDetails() {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
+                {/* Action Buttons */}{
+                  daysRemaining!=0&&
+            
                 <div className="space-y-3">
  
 
@@ -243,8 +245,8 @@ export default function CampaignDetails() {
                         Pause Campaign
                       </>
                     )}
-                  </Button>
 
+                  </Button>    
                   <div className="flex gap-3">
                     {/* <Button
                       variant="outline"
@@ -266,7 +268,7 @@ export default function CampaignDetails() {
                       Save
                     </Button> */}
                   </div>
-                </div>
+                </div>}
               </CardContent>
             </Card>
 
