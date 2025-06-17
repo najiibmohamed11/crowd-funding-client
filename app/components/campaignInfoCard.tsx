@@ -112,7 +112,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
             >
               <SiPolygon className="mr-2 h-4 w-4" />
               {IsThoOwnerHer
-                ? "you can t dont to you'r selfe"
+                ? "you can't donet to you'r selfe"
                 : "Back this project"}
             </Button>
             <Button
@@ -170,7 +170,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
           </div>
         ) : (
           <div className="text-center flex justify-center items-center mt-4">
-            no backers
+     
           </div>
         )}
       </CardContent>

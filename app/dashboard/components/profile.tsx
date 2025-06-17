@@ -32,41 +32,40 @@ export function Profile() {
   } = useReadContract({
     contract: contract,
     method:
-      "function getUserOngoingCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+    "function getUserLatestOngoingCampaign(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive))",
     params: [account?.address],
   });
 
-  const {
-    data: allData,
-    isPending: allpending,
-    refetch: refetchAll,
-  } = useReadContract({
-    contract: contract,
-    method:
-      "function getUserCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
-    params: [account?.address ?? ""],
-  });
+  // const {
+  //   data: allData,
+  //   isPending: allpending,
+  //   refetch: refetchAll,
+  // } = useReadContract({
+  //   contract: contract,
+  //   method:
+  //     "function getUserCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
+  //   params: [account?.address ?? ""],
+  // });
 
   // Refetch data when transaction is successful
   useEffect(() => {
     if (isSuccess) {
       refetchOngoing();
-      refetchAll();
     }
-  }, [isSuccess, refetchOngoing, refetchAll]);
+  }, [isSuccess, refetchOngoing]);
 
-  if (isPending || allpending) {
+  if (isPending ) {
     return <div>Loading...</div>;
   }
 
-  if (!data || data.length === 0 || !allData) {
+  if (!data ) {
     return <div></div>;
   }
   
-  const lastCampaign =
-    allData[allData.length - 1].isActive == false
-      ? allData[allData.length - 1]
-      : data[data.length - 1];
+  // const data =
+  //   allData[allData.length - 1].isActive == false
+  //     ? allData[allData.length - 1]
+  //     : data[data.length - 1];
 
   // Function to calculate percentage
   const percentageCalculator = (amountCollected: number, target: number) => {
@@ -74,14 +73,15 @@ export function Profile() {
     const collectedAmount = amountCollected / 1e18;
     return ((collectedAmount / target) * 100).toFixed(2); // Limit to 2 decimals
   };
-  const lastCampaignId = Number(lastCampaign.id);
+  const lastCampaignId = Number(data.id);
 
   const progress = Number(
     percentageCalculator(
-      Number(lastCampaign.amountCollected),
-      Number(lastCampaign.target)
+      Number(data.amountCollected),
+      Number(data.target)
     )
   );
+  console.log(lastCampaignId)
   const paus = async () => {
     const transaction = await prepareContractCall({
       contract,
@@ -149,13 +149,13 @@ export function Profile() {
         <div className="flex justify-between items-center">
           <span className="text-gray-500">Current status:</span>
           <span className="text-red-500 font-medium flex items-center gap-1">
-          <SiPolygon/>  {(Number(lastCampaign.amountCollected) / 1e18).toFixed(2)}
+          <SiPolygon/>  {(Number(data.amountCollected) / 1e18).toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-gray-500">You need:</span>
           <span className="font-medium flex justify-between items-cente gap-1">
-          <SiPolygon/>  {Number(lastCampaign.target).toFixed(2)}
+          <SiPolygon/>  {Number(data.target).toFixed(2)}
           </span>
         </div>
       </div>
@@ -166,12 +166,12 @@ export function Profile() {
         variant="outline"
         className="w-full h-16 flex items-center rounded-2xl justify-center gap-2 text-red-500 bg-transparent"
       >
-        {lastCampaign.isActive ? (
+        {data.isActive ? (
           <FaRegCirclePause className="h-5 w-5" />
         ) : (
           <FaPlay className="h-5 w-5" />
         )}
-        {lastCampaign.isActive ? "        Stop collecting" : "start collection"}
+        {data.isActive ? "        Stop collecting" : "start collection"}
       </Button>
     </Card>
   );

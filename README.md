@@ -1,7 +1,10 @@
 ## Todo
 
 adding smart contract function that fetches expired campaigns for specific user 
-- [] getuseExpiredCapaign
-- [] GetUsersPausedCampaign
-- [] getUserOngoingCampaign
-- [] testing githup setup
+- [x] getUserExpiredCampaigns
+- [x] getUsersInActiveCampaign
+- [x] getUserOngoingCampaigns
+- [] editable description and titile of campaign
+
+
+
