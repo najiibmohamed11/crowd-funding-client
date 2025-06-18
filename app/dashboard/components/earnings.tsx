@@ -5,7 +5,6 @@ import { TopDonators } from "./top-donators"
 export function Earnings({campaignData}) {
 
   const AllCampaignsDontaors=campaignData.flatMap((campaign)=>campaign.donators);
-  console.log(AllCampaignsDontaors);
   const getLastSevenDaysData = () => {
     if (!AllCampaignsDontaors) return []
     

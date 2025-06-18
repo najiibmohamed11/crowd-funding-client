@@ -18,6 +18,7 @@ import {
 import { BsRocketTakeoffFill } from "react-icons/bs";
 
 import { DonationModal } from "@/app/components/donationModal";
+import { EvcDonationModal } from "@/app/components/evcDonationModal";
 import  DonatorsModal  from "./donatorsModal";
 import { ShareModal } from "./shareModal";
 import { useParams } from "next/navigation";
@@ -47,13 +48,23 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   deadline,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEvcModalOpen, setIsEvcModalOpen] = useState(false);
   const [isDonateListOpen, setIsDonateListOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const params = useParams();
   const account = useActiveAccount()
   const id = Number(params.id);
-  const handleDonate = (amount: string, comment: string) => {
-    console.log(`Donating ${amount} ETH with comment: ${comment}`);
+  const handleDonate = async (amount: string, comment: string) => {
+    // Refresh campaign data after successful donation
+    try {
+      // You can add your data refresh logic here
+      // For example, refetch campaign data or update local state
+      console.log(`Donation successful: ${amount} with comment: ${comment}`);
+      // Force a re-render or refetch data
+      window.location.reload(); // Temporary solution - you might want to implement a more elegant refresh
+    } catch (error) {
+      console.error("Error refreshing campaign data:", error);
+    }
   };
 
   const campaignUrl = `${window.location.origin}/campaign/${id}`;
@@ -113,7 +124,20 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
               <SiPolygon className="mr-2 h-4 w-4" />
               {IsThoOwnerHer
                 ? "you can't donet to you'r selfe"
-                : "Back this project"}
+                : "Donate with Polygon"}
+            </Button>
+            <Button
+              size="lg"
+              className={`flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white hover:text-white  ${
+                IsThoOwnerHer ? "cursor-not-allowed " : ""
+              } `}
+              disabled={IsThoOwnerHer}
+              onClick={() => setIsEvcModalOpen(true)}
+            >
+              <span className="mr-2 font-bold">EVC</span>
+              {IsThoOwnerHer
+                ? "you can't donet to you'r selfe"
+                : "Donate with EVC"}
             </Button>
             <Button
               onClick={() => setIsShareModalOpen(true)}
@@ -177,6 +201,11 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
       <DonationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onDonate={handleDonate}
+      />
+      <EvcDonationModal
+        isOpen={isEvcModalOpen}
+        onClose={() => setIsEvcModalOpen(false)}
         onDonate={handleDonate}
       />
       <DonatorsModal
