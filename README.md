@@ -4,7 +4,8 @@ adding smart contract function that fetches expired campaigns for specific user
 - [x] getUserExpiredCampaigns
 - [x] getUsersInActiveCampaign
 - [x] getUserOngoingCampaigns
-- [] editable description and titile of campaign
-
+- [x] editable description and titile of campaign
+- []  evc button working 100%
+- [] notification
 
 

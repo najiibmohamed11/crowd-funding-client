@@ -139,8 +139,7 @@ export default function CreateCampaign() {
   
 
   return (
-    <>
-   
+    <>   
       <div className="min-h-screen bg-gradient-to-br  p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-8">
           <Card className="border-0 shadow-lg bg-gray-50 backdrop-blur-sm">

@@ -44,6 +44,7 @@ export function EvcDonationModal({
   const params = useParams();
   const id = BigInt(params.id as string);
   const [isLoading, setIsLoading] = useState(false);
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     fetch(
@@ -77,6 +78,10 @@ export function EvcDonationModal({
       setError("Donation amount must be greater than 0");
       return false;
     }
+    if (!/^\+252\d{9}$/.test(phone)) {
+      setError("Please enter a valid Somali phone number starting with +252");
+      return false;
+    }
     setError(null);
     return true;
   };
@@ -96,7 +101,7 @@ export function EvcDonationModal({
         amountInWei,
         comment,
         currentDate,
-        "su1"
+        phone
       );
 
       if (data.success) {
@@ -107,6 +112,7 @@ export function EvcDonationModal({
           setSuccess(false);
           setEvcAmount("");
           setComment("");
+          setPhone("");
           setError(null);
         }, 2000);
       } else {
@@ -161,6 +167,7 @@ export function EvcDonationModal({
         setSuccess(false);
         setEvcAmount("");
         setComment("");
+        setPhone("");
         setError(null);
       }, 2000);
     }
@@ -218,6 +225,29 @@ export function EvcDonationModal({
               <span className="text-xl font-semibold text-gray-400 dark:text-gray-500">
                 EVC
               </span>
+            </div>
+          </div>
+          <div className="relative">
+            <Input
+              id="phone"
+              value={phone}
+              onChange={(e) => {
+                let value = e.target.value.replace(/[^\d+]/g, "");
+                if (!value.startsWith("+252")) value = "+252" + value.replace(/^\+?252?/, "");
+                if (value.length > 13) value = value.slice(0, 13);
+                setPhone(value);
+              }}
+              placeholder="+2526XXXXXXXX"
+              className="pl-12 pr-4 py-6 text-lg font-medium bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+              disabled={isLoading}
+              maxLength={13}
+              autoComplete="tel"
+              inputMode="tel"
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-500">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75v10.5A2.25 2.25 0 004.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75M2.25 6.75A2.25 2.25 0 014.5 4.5h15a2.25 2.25 0 012.25 2.25m-19.5 0l9.75 7.5 9.75-7.5" />
+              </svg>
             </div>
           </div>
           <motion.div

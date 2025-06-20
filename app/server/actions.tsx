@@ -3,6 +3,30 @@ import {  prepareContractCall, sendTransaction } from "thirdweb";
 import { polygon } from "thirdweb/chains"; // or your target chain
 import { client,contract } from "../client";
 import { privateKeyAccount } from "thirdweb/wallets";
+import {payByWaafiPay,formatMerchantPhone} from "evc-plus"
+
+export const evcPaying=async(phoneNumber:string)=>{
+    const formattedNumber=formatMerchantPhone(phoneNumber)
+  try{
+    const response= await payByWaafiPay({
+        phone: formattedNumber,
+        amount: 0.01,
+        merchantUid: process.env.MERCHANT_UID, //Ask User Provider Like Hormuud
+        apiUserId: process.env.API_USER_ID,  //Ask User Provider Like Hormuud
+        apiKey: process.env.API_KEY, //Ask User Provider Like Hormuud
+        description: 'Payment description',
+        invoiceId: '12345',
+        referenceId: 'abc123',
+    })
+    return response
+
+  }catch(e){
+    console.log(e)
+    return {succes:false,message:"some thing when wrong during payment"}
+  }
+
+}
+
 
 export const donation = async (
   campaignId,
@@ -10,14 +34,16 @@ export const donation = async (
   amountInWei,
   comment,
   date,
-  evcTransactionId,
+  phonneNumber,
 ) => {
   try {
     // Verify payment through your API here
-    const paymentVerified = true; // Replace with your actual API check
 
-    if (!paymentVerified) {
-      throw new Error("Payment not verified");
+   const isPaymentVerified=await evcPaying(phonneNumber)
+
+    if (!isPaymentVerified.status) {
+      console.log(isPaymentVerified)
+      throw new Error(isPaymentVerified.error);
     }
 
     if (!process.env.PRIVATE_KEY) {
@@ -42,7 +68,7 @@ export const donation = async (
         BigInt(amountInWei),
         comment,
         date,
-        evcTransactionId,
+        "evcTransactionId",
       ],
     });
 
