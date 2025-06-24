@@ -53,7 +53,7 @@ export default function Header() {
       {/* Actions */}
             {/* Actions */}
             <div className="flex items-center gap-3">
-          <ConnectWallet />
+          <ConnectWallet  />
           <Link href="/dashboard">
             <Button className="h-10 rounded-md bg-black px-5 text-sm font-medium text-white hover:bg-black/90">
               Dashboard

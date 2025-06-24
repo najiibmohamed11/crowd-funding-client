@@ -15,6 +15,7 @@ import { contract } from "@/app/client";
 import { useReadContract } from "thirdweb/react";
 import { useParams } from "next/navigation";
 import Web3Avatar from "@/app/components/web3Avatar";
+import Loading from "./components/detailsSkeleton";
 
 
 
@@ -31,9 +32,7 @@ export default function CampaignDetails() {
 
   if (isLoading)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center py-10">Loading campaigns...</div>
-      </div>
+      <Loading/>
     );
 
   if (error)

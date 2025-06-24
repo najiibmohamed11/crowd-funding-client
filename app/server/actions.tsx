@@ -5,12 +5,14 @@ import { client,contract } from "../client";
 import { privateKeyAccount } from "thirdweb/wallets";
 import {payByWaafiPay,formatMerchantPhone} from "evc-plus"
 
-export const evcPaying=async(phoneNumber:string)=>{
-    const formattedNumber=formatMerchantPhone(phoneNumber)
+export const evcPaying=async(phoneNumber:string,evcAmount:number)=>{
   try{
+    if(!phoneNumber||!evcAmount){
+      return {succes:false,message:"required fild is missing"}
+    }
     const response= await payByWaafiPay({
-        phone: formattedNumber,
-        amount: 0.01,
+        phone: phoneNumber,
+        amount: evcAmount,
         merchantUid: process.env.MERCHANT_UID, //Ask User Provider Like Hormuud
         apiUserId: process.env.API_USER_ID,  //Ask User Provider Like Hormuud
         apiKey: process.env.API_KEY, //Ask User Provider Like Hormuud
@@ -29,21 +31,21 @@ export const evcPaying=async(phoneNumber:string)=>{
 
 
 export const donation = async (
-  campaignId,
-  donor,
-  amountInWei,
-  comment,
-  date,
-  phonneNumber,
+  campaignId:bigint,
+  donor:string,
+  amountInWei:string,
+  comment:string,
+  date:string,
+  phonneNumber:string,
+  evcAmount:number
 ) => {
   try {
-    // Verify payment through your API here
 
-   const isPaymentVerified=await evcPaying(phonneNumber)
+   const isPaymentVerified=true
 
-    if (!isPaymentVerified.status) {
+    if (!isPaymentVerified) {
       console.log(isPaymentVerified)
-      throw new Error(isPaymentVerified.error);
+      throw new Error(isPaymentVerified);
     }
 
     if (!process.env.PRIVATE_KEY) {
@@ -63,7 +65,7 @@ export const donation = async (
       method:"function donateWithEvc(uint256 _campaignId, address _donor, uint256 _amountInWei, string _comment, string _date, string _evcTransactionId)",
 
       params: [
-        BigInt(campaignId),
+       campaignId,
         donor,
         BigInt(amountInWei),
         comment,

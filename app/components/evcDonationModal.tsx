@@ -93,7 +93,11 @@ export function EvcDonationModal({
       setIsLoading(true);
       setError(null);
       const currentDate = new Date().toLocaleDateString();
-      const amountInWei = parseEther(evcAmount).toString();
+      const creatorGets=(parseFloat(maticAmount || "0") * 0.95).toFixed(2)
+      const amountInWei = parseEther(creatorGets).toString();
+      console.log(creatorGets)
+      console.log("amountInWei",amountInWei)
+      console.log(amountInWei)
       
       const data = await donation(
         id,
@@ -101,7 +105,8 @@ export function EvcDonationModal({
         amountInWei,
         comment,
         currentDate,
-        phone
+        phone,
+       Number(evcAmount)
       );
 
       if (data.success) {

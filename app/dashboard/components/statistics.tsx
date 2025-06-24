@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { SiPolygon } from 'react-icons/si' // Using SiPolygon from react-icons
 
 export function Statistics({ campaignData }) {
-  console.log(campaignData, "campaig Data");
   const allCampaignDonators = campaignData.flatMap(
     (campaign) => campaign.donators
   );
