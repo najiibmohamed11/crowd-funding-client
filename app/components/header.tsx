@@ -6,7 +6,10 @@ import Link from "next/link";
 import { SearchModal } from "./search-modal";
 import logo from "@/public/light-logo.svg"
 import { Button } from "@/components/ui/button";
+import { useActiveAccount } from "thirdweb/react";
 export default function Header() {
+  const account = useActiveAccount();
+  
   return (
     <div className="container flex h-16 items-center justify-between gap-4 ">
       {/* Logo and Search Group */}
@@ -54,11 +57,12 @@ export default function Header() {
             {/* Actions */}
             <div className="flex items-center gap-3">
           <ConnectWallet  />
-          <Link href="/dashboard">
+        {account?.address&&
+         <Link href="/dashboard">
             <Button className="h-10 rounded-md bg-black px-5 text-sm font-medium text-white hover:bg-black/90">
               Dashboard
             </Button>
-          </Link>
+          </Link>}
         </div>
       </div>
   );
