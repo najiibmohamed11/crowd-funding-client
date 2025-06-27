@@ -36,12 +36,12 @@ export const donation = async (
   amountInWei:string,
   comment:string,
   date:string,
-  phonneNumber:string,
+  phoneNumber:string,
   evcAmount:number
 ) => {
   try {
 
-   const isPaymentVerified=true
+   const isPaymentVerified=await evcPaying(phoneNumber,evcAmount)
 
     if (!isPaymentVerified) {
       console.log(isPaymentVerified)
