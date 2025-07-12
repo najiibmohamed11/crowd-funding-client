@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { FaEthereum } from "react-icons/fa";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { FaEthereum } from 'react-icons/fa';
 import {
   Share2,
   MessageCircle,
@@ -14,17 +16,18 @@ import {
   Sun,
   Moon,
   Rocket,
-} from "lucide-react";
-import { BsRocketTakeoffFill } from "react-icons/bs";
+} from 'lucide-react';
+import { BsRocketTakeoffFill } from 'react-icons/bs';
 
-import { DonationModal } from "@/app/components/donationModal";
-import { EvcDonationModal } from "@/app/components/evcDonationModal";
-import  DonatorsModal  from "./donatorsModal";
-import { ShareModal } from "./shareModal";
-import { useParams } from "next/navigation";
-import Web3Avatar from "./web3Avatar";
-import { useActiveAccount } from "thirdweb/react";
-import { SiPolygon } from "react-icons/si";
+import { DonationModal } from '@/app/components/donationModal';
+import { EvcDonationModal } from '@/app/components/evcDonationModal';
+import DonatorsModal from './donatorsModal';
+import { ShareModal } from './shareModal';
+import { useParams } from 'next/navigation';
+import Web3Avatar from './web3Avatar';
+import { useActiveAccount } from 'thirdweb/react';
+import { SiPolygon, SiLandrover } from 'react-icons/si';
+import { Heart } from 'lucide-react';
 
 interface Donator {
   amount: bigint;
@@ -54,15 +57,34 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   const [isEvcModalOpen, setIsEvcModalOpen] = useState(false);
   const [isDonateListOpen, setIsDonateListOpen] = useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isLoved, setIsLoved] = useState(false);
   const params = useParams();
   const account = useActiveAccount();
   const id = Number(params.id);
 
+  useEffect(() => {
+    const lovedCampaigns = JSON.parse(localStorage.getItem('lovedCampaigns') || '{}');
+    if (lovedCampaigns[id]) {
+      setIsLoved(true);
+    }
+  }, [id]);
+
+  const handleLove = () => {
+    const lovedCampaigns = JSON.parse(localStorage.getItem('lovedCampaigns') || '{}');
+    if (isLoved) {
+      delete lovedCampaigns[id];//removes the propert and 
+    } else {
+      lovedCampaigns[id] = true;
+    }
+    localStorage.setItem('lovedCampaigns', JSON.stringify(lovedCampaigns));
+    setIsLoved(!isLoved);
+  };
+
   const handleDonate = async (amount: string, comment: string) => {
     // Add a small delay to allow the transaction to be processed
-    setTimeout(() => {
-      window.location.reload();
-    }, 2500); // 2.5 seconds delay after the success message
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 2500); // 2.5 seconds delay after the success message
   };
 
   const campaignUrl = `${window.location.origin}/campaign/${id}`;
@@ -104,7 +126,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
               >
                 <BsRocketTakeoffFill
                   className="h-3 w-3 sm:h-4 sm:w-4 text-primary"
-                  style={{ transform: "rotate(45deg)" }}
+                  style={{ transform: 'rotate(45deg)' }}
                 />
               </div>
             </div>
@@ -113,11 +135,11 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
             <span>{donators.length} backers</span>
             <span>{deadline.toString()} days left</span>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className="flex flex-row gap-2 sm:gap-3">
             <Button
               size="lg"
-              className={`w-full sm:flex-1 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white hover:text-white ${
-                IsThoOwnerHer ? "cursor-not-allowed opacity-70" : ""
+              className={`flex-1 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white hover:text-white ${
+                IsThoOwnerHer ? 'cursor-not-allowed opacity-70' : ''
               } `}
               disabled={IsThoOwnerHer}
               onClick={() => setIsModalOpen(true)}
@@ -126,13 +148,13 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
               <span className="text-xs sm:text-sm">
                 {IsThoOwnerHer
                   ? "You can't donate to yourself"
-                  : "Donate with Polygon"}
+                  : 'Donate with Polygon'}
               </span>
             </Button>
             <Button
               size="lg"
-              className={`w-full sm:flex-1 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white hover:text-white ${
-                IsThoOwnerHer ? "cursor-not-allowed opacity-70" : ""
+              className={`flex-1 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white hover:text-white ${
+                IsThoOwnerHer ? 'cursor-not-allowed opacity-70' : ''
               } `}
               disabled={IsThoOwnerHer}
               onClick={() => setIsEvcModalOpen(true)}
@@ -141,16 +163,24 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
               <span className="text-xs sm:text-sm">
                 {IsThoOwnerHer
                   ? "You can't donate to yourself"
-                  : "Donate with EVC"}
+                  : 'Donate with EVC'}
               </span>
             </Button>
+
             <Button
               onClick={() => setIsShareModalOpen(true)}
-              size="lg"
+              size="icon"
               variant="outline"
-              className="w-full sm:w-auto py-2 sm:py-3"
             >
-              <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <Share2 className="h-4 w-4" />
+            </Button>
+
+            <Button onClick={handleLove} size="icon" variant="outline">
+              <Heart
+                className={`h-4 w-4 transition-colors duration-300 ${
+                  isLoved ? 'text-red-500 fill-red-500' : 'text-muted-foreground'
+                }`}
+              />
             </Button>
           </div>
         </div>
@@ -168,7 +198,10 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between flex-wrap gap-1 sm:gap-2">
                       <p className="text-xs sm:text-sm font-medium text-foreground break-all">
-                        {`${donator.donator.slice(0, 6)}...${donator.donator.slice(-4)}`}
+                        {`${donator.donator.slice(
+                          0,
+                          6
+                        )}...${donator.donator.slice(-4)}`}
                       </p>
 
                       <Badge
@@ -185,7 +218,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
                 </div>
               ))}
             </div>
-        
+
             <div className="mt-4 sm:mt-6 text-center">
               <Button
                 onClick={() => setIsDonateListOpen(true)}
@@ -198,8 +231,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
             </div>
           </div>
         ) : (
-          <div className="text-center flex justify-center items-center mt-4">
-          </div>
+          <div className="text-center flex justify-center items-center mt-4"></div>
         )}
       </CardContent>
       <DonationModal
@@ -227,3 +259,4 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
 };
 
 export default CampaignInfoCard;
+

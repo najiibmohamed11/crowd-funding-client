@@ -147,10 +147,7 @@ export function DonationModal({
           <DialogTitle className="text-3xl font-bold">
             Back this project
           </DialogTitle>
-          <DialogDescription className="text-gray-600 dark:text-gray-400">
-            Support the Powered Kits Learning Boxes project with Polygon
-            (MATIC).
-          </DialogDescription>
+          
         </DialogHeader>
 
         {error && (
