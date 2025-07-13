@@ -7,6 +7,8 @@ contract CrowdfundingImproved {
         uint256 amount;
         string comment;
         string date;
+        string paymentMethod; // "crypto" or "evc"
+
     }
 
     struct Campaign {
@@ -20,11 +22,17 @@ contract CrowdfundingImproved {
         string image;
         Donator[] donators;
         bool isActive;
+        bool approved;
     }
 
     // Main storage: mapping from campaignId to Campaign
     mapping(uint256 => Campaign) public campaigns;
     uint256 public numberOfCampaigns = 0;
+
+    // EVC Payment Oracle System
+    address public oracle; // Your backend wallet address
+    uint256 public escrowBalance; // Track escrow funds
+    
     
     // Keep track of all campaign IDs for iteration
     uint256[] public allCampaignIds;
@@ -32,13 +40,22 @@ contract CrowdfundingImproved {
     // Owner's campaigns
     mapping(address => uint256[]) public ownerToCampaignIds;
 
-    // Event to log campaign state changes
+    // Events
     event CampaignStateChanged(uint256 campaignId, bool isActive);
     event CampaignCreated(uint256 campaignId, address owner);
-    event DonationReceived(uint256 campaignId, address donor, uint256 amount);
+    event DonationReceived(uint256 campaignId, address donor, uint256 amount, string paymentMethod);
+    event EvcDonationProcessed(uint256 campaignId, address donor, uint256 amount, string evcTransactionId);
+    event EscrowFunded(uint256 amount);
+    event EscrowWithdrawn(uint256 amount);
+    event CampaignApproved(uint256 campaignId);
 
     modifier onlyOwner(uint256 _campaignId) {
         require(campaigns[_campaignId].owner == msg.sender, "Only campaign owner can perform this action");
+        _;
+    }
+
+        modifier onlyOracle() {
+        require(msg.sender == oracle, "Only oracle can perform this action");
         _;
     }
 
@@ -46,6 +63,87 @@ contract CrowdfundingImproved {
         require(_campaignId < numberOfCampaigns, "Campaign does not exist");
         _;
     }
+
+    
+    constructor() {
+        oracle = msg.sender; // Initially set deployer as oracle
+    }
+
+    // Function to change oracle address (important for security)
+    function setOracle(address _newOracle) public onlyOracle {
+        oracle = _newOracle;
+    }
+
+    // Fund the escrow with MATIC for EVC payments
+    function fundEscrow() public payable onlyOracle {
+        escrowBalance += msg.value;
+        emit EscrowFunded(msg.value);
+    }
+
+    // Withdraw from escrow (only oracle/admin)
+    function withdrawFromEscrow(uint256 _amount) public onlyOracle {
+        require(_amount <= escrowBalance, "Insufficient escrow balance");
+        require(_amount <= address(this).balance, "Insufficient contract balance");
+        
+        escrowBalance -= _amount;
+        (bool sent, ) = payable(oracle).call{value: _amount}("");
+        require(sent, "Failed to withdraw from escrow");
+        
+        emit EscrowWithdrawn(_amount);
+    }
+
+
+     function donateWithEvc(
+        uint256 _campaignId,
+        address _donor,
+        uint256 _amountInWei, // Convert EVC amount to Wei equivalent
+        string memory _comment,
+        string memory _date,
+        string memory _evcTransactionId
+    ) public onlyOracle campaignExists(_campaignId) {
+        Campaign storage campaign = campaigns[_campaignId];
+
+        require(campaign.isActive, "Campaign is paused");
+        require(campaign.approved, "Campaign is not approved");
+        require(campaign.deadline > block.timestamp, "Campaign expired");
+        require(_amountInWei <= escrowBalance, "Insufficient escrow balance");
+        require(_amountInWei <= address(this).balance, "Insufficient contract balance");
+
+        // Mark transaction as processed to prevent double spending
+
+        // Add donator to campaign
+        campaign.donators.push(Donator({
+            donator: _donor,
+            amount: _amountInWei,
+            comment: _comment,
+            date: _date,
+            paymentMethod: "evc"
+        }));
+
+        // Transfer from escrow to campaign owner
+        escrowBalance -= _amountInWei;
+        (bool sent, ) = payable(campaign.owner).call{value: _amountInWei}("");
+        require(sent, "Failed to send Ether to campaign owner");
+
+        // Update campaign collected amount
+        campaign.amountCollected += _amountInWei;
+        
+        emit DonationReceived(_campaignId, _donor, _amountInWei, "evc");
+        emit EvcDonationProcessed(_campaignId, _donor, _amountInWei, _evcTransactionId);
+    }
+
+
+    // Get escrow balance
+    function getEscrowBalance() public view returns (uint256) {
+        return escrowBalance;
+    }
+
+    // Get contract balance
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+
 
     function createCampaign(
         address _owner,
@@ -70,6 +168,7 @@ contract CrowdfundingImproved {
         campaign.image = _image;
         campaign.amountCollected = 0;
         campaign.isActive = true;
+        campaign.approved = false;
         // donators array is automatically initialized as an empty array
 
         // Track this campaign in our arrays
@@ -80,6 +179,13 @@ contract CrowdfundingImproved {
         
         numberOfCampaigns++;
         return campaignId;
+    }
+
+    function approveCampaign(uint256 _campaignId) public onlyOracle campaignExists(_campaignId) {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(!campaign.approved, "Campaign is already approved");
+        campaign.approved = true;
+        emit CampaignApproved(_campaignId);
     }
 
     // Toggle function to switch between active and paused states
@@ -103,20 +209,23 @@ contract CrowdfundingImproved {
         Campaign storage campaign = campaigns[_campaignId];
 
         require(campaign.isActive, "Campaign is paused");
+        require(campaign.approved, "Campaign is not approved");
         require(campaign.deadline > block.timestamp, "Campaign expired");
 
         campaign.donators.push(Donator({
             donator: msg.sender,
             amount: amount,
             comment: _comment,
-            date: _date
+            date: _date,
+            paymentMethod: "crypto"
+            
         }));
 
         (bool sent, ) = payable(campaign.owner).call{value: amount}("");
         require(sent, "Failed to send Ether");
 
         campaign.amountCollected += amount;
-        emit DonationReceived(_campaignId, msg.sender, amount);
+        emit DonationReceived(_campaignId, msg.sender, amount,"crypto");
     }
 
     // Get a specific campaign by ID
@@ -131,7 +240,7 @@ contract CrowdfundingImproved {
         // First count active campaigns
         for(uint256 i = 0; i < allCampaignIds.length; i++) {
             uint256 campaignId = allCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
                 activeCount++;
             }
         }
@@ -142,13 +251,33 @@ contract CrowdfundingImproved {
         
         for(uint256 i = 0; i < allCampaignIds.length; i++) {
             uint256 campaignId = allCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
                 activeCampaigns[currentIndex] = campaigns[campaignId];
                 currentIndex++;
             }
         }
         
         return activeCampaigns;
+    }
+
+    function getPendingCampaigns() public view returns (Campaign[] memory) {
+        uint256 pendingCount = 0;
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            if (!campaigns[i].approved) {
+                pendingCount++;
+            }
+        }
+
+        Campaign[] memory pendingCampaigns = new Campaign[](pendingCount);
+        uint256 currentIndex = 0;
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            if (!campaigns[i].approved) {
+                pendingCampaigns[currentIndex] = campaigns[i];
+                currentIndex++;
+            }
+        }
+
+        return pendingCampaigns;
     }
 
     // Get all expired campaigns
@@ -184,7 +313,7 @@ contract CrowdfundingImproved {
         // Count user's active campaigns
         for(uint256 i = 0; i < userCampaignIds.length; i++) {
             uint256 campaignId = userCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
                 activeCount++;
             }
         }
@@ -195,7 +324,7 @@ contract CrowdfundingImproved {
         
         for(uint256 i = 0; i < userCampaignIds.length; i++) {
             uint256 campaignId = userCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
                 activeCampaigns[currentIndex] = campaigns[campaignId];
                 currentIndex++;
             }
@@ -284,11 +413,11 @@ contract CrowdfundingImproved {
         bool found = false;
         uint256 latestDeadline = 0;
 
-        for (uint256 i = userCampaignIds.length-1; i < userCampaignIds.length; i--) {
+        for (uint256 i = 0; i < userCampaignIds.length; i++) {
             uint256 campaignId = userCampaignIds[i];
             Campaign memory campaign = campaigns[campaignId];
 
-            if (campaign.deadline > block.timestamp && campaign.deadline > latestDeadline) {
+            if (campaign.deadline > block.timestamp && campaign.deadline > latestDeadline && campaign.approved) {
                 latestDeadline = campaign.deadline;
                 latestCampaign = campaign;
                 found = true;

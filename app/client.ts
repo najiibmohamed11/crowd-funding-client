@@ -16,6 +16,6 @@ export const client = createThirdwebClient({
 
 export const contract =getContract({
   client,
-  address: "0xD20277980095DbE19069065c0F59a017605645c6",
+  address: "0x2f991b1C18cBb40d5867eAb13756b86290E5cF81",
   chain: polygonAmoy,
 });
