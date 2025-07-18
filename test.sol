@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-contract CrowdfundingImproved {
+contract Crowdfunding {
     struct Donator {
         address donator;
         uint256 amount;
@@ -22,7 +22,7 @@ contract CrowdfundingImproved {
         string image;
         Donator[] donators;
         bool isActive;
-        bool approved;
+        string approvalStatus; // "pending", "approved", "rejected"
     }
 
     // Main storage: mapping from campaignId to Campaign
@@ -48,6 +48,7 @@ contract CrowdfundingImproved {
     event EscrowFunded(uint256 amount);
     event EscrowWithdrawn(uint256 amount);
     event CampaignApproved(uint256 campaignId);
+    event CampaignRejected(uint256 campaignId);
 
     modifier onlyOwner(uint256 _campaignId) {
         require(campaigns[_campaignId].owner == msg.sender, "Only campaign owner can perform this action");
@@ -104,7 +105,7 @@ contract CrowdfundingImproved {
         Campaign storage campaign = campaigns[_campaignId];
 
         require(campaign.isActive, "Campaign is paused");
-        require(campaign.approved, "Campaign is not approved");
+        require(keccak256(bytes(campaign.approvalStatus)) == keccak256(bytes("approved")), "Campaign is not approved");
         require(campaign.deadline > block.timestamp, "Campaign expired");
         require(_amountInWei <= escrowBalance, "Insufficient escrow balance");
         require(_amountInWei <= address(this).balance, "Insufficient contract balance");
@@ -168,7 +169,7 @@ contract CrowdfundingImproved {
         campaign.image = _image;
         campaign.amountCollected = 0;
         campaign.isActive = true;
-        campaign.approved = false;
+        campaign.approvalStatus = "pending";
         // donators array is automatically initialized as an empty array
 
         // Track this campaign in our arrays
@@ -183,9 +184,16 @@ contract CrowdfundingImproved {
 
     function approveCampaign(uint256 _campaignId) public onlyOracle campaignExists(_campaignId) {
         Campaign storage campaign = campaigns[_campaignId];
-        require(!campaign.approved, "Campaign is already approved");
-        campaign.approved = true;
+        require(keccak256(bytes(campaign.approvalStatus)) == keccak256(bytes("pending")), "Campaign is not pending approval");
+        campaign.approvalStatus = "approved";
         emit CampaignApproved(_campaignId);
+    }
+
+    function rejectCampaign(uint256 _campaignId) public onlyOracle campaignExists(_campaignId) {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(keccak256(bytes(campaign.approvalStatus)) == keccak256(bytes("pending")), "Campaign is not pending approval");
+        campaign.approvalStatus = "rejected";
+        emit CampaignRejected(_campaignId);
     }
 
     // Toggle function to switch between active and paused states
@@ -209,7 +217,7 @@ contract CrowdfundingImproved {
         Campaign storage campaign = campaigns[_campaignId];
 
         require(campaign.isActive, "Campaign is paused");
-        require(campaign.approved, "Campaign is not approved");
+        require(keccak256(bytes(campaign.approvalStatus)) == keccak256(bytes("approved")), "Campaign is not approved");
         require(campaign.deadline > block.timestamp, "Campaign expired");
 
         campaign.donators.push(Donator({
@@ -240,7 +248,7 @@ contract CrowdfundingImproved {
         // First count active campaigns
         for(uint256 i = 0; i < allCampaignIds.length; i++) {
             uint256 campaignId = allCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("approved"))) {
                 activeCount++;
             }
         }
@@ -251,7 +259,7 @@ contract CrowdfundingImproved {
         
         for(uint256 i = 0; i < allCampaignIds.length; i++) {
             uint256 campaignId = allCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("approved"))) {
                 activeCampaigns[currentIndex] = campaigns[campaignId];
                 currentIndex++;
             }
@@ -263,7 +271,7 @@ contract CrowdfundingImproved {
     function getPendingCampaigns() public view returns (Campaign[] memory) {
         uint256 pendingCount = 0;
         for (uint256 i = 0; i < numberOfCampaigns; i++) {
-            if (!campaigns[i].approved) {
+            if (keccak256(bytes(campaigns[i].approvalStatus)) == keccak256(bytes("pending"))) {
                 pendingCount++;
             }
         }
@@ -271,13 +279,33 @@ contract CrowdfundingImproved {
         Campaign[] memory pendingCampaigns = new Campaign[](pendingCount);
         uint256 currentIndex = 0;
         for (uint256 i = 0; i < numberOfCampaigns; i++) {
-            if (!campaigns[i].approved) {
+            if (keccak256(bytes(campaigns[i].approvalStatus)) == keccak256(bytes("pending"))) {
                 pendingCampaigns[currentIndex] = campaigns[i];
                 currentIndex++;
             }
         }
 
         return pendingCampaigns;
+    }
+
+    function getRejectedCampaigns() public view returns (Campaign[] memory) {
+        uint256 rejectedCount = 0;
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            if (keccak256(bytes(campaigns[i].approvalStatus)) == keccak256(bytes("rejected"))) {
+                rejectedCount++;
+            }
+        }
+
+        Campaign[] memory rejectedCampaigns = new Campaign[](rejectedCount);
+        uint256 currentIndex = 0;
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            if (keccak256(bytes(campaigns[i].approvalStatus)) == keccak256(bytes("rejected"))) {
+                rejectedCampaigns[currentIndex] = campaigns[i];
+                currentIndex++;
+            }
+        }
+
+        return rejectedCampaigns;
     }
 
     // Get all expired campaigns
@@ -313,7 +341,7 @@ contract CrowdfundingImproved {
         // Count user's active campaigns
         for(uint256 i = 0; i < userCampaignIds.length; i++) {
             uint256 campaignId = userCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("approved"))) {
                 activeCount++;
             }
         }
@@ -324,7 +352,7 @@ contract CrowdfundingImproved {
         
         for(uint256 i = 0; i < userCampaignIds.length; i++) {
             uint256 campaignId = userCampaignIds[i];
-            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && campaigns[campaignId].approved) {
+            if(campaigns[campaignId].deadline > block.timestamp && campaigns[campaignId].isActive && keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("approved"))) {
                 activeCampaigns[currentIndex] = campaigns[campaignId];
                 currentIndex++;
             }
@@ -394,6 +422,56 @@ contract CrowdfundingImproved {
         return expiredCampaigns;
     }
 
+    function getUserPendingCampaigns(address _user) public view returns (Campaign[] memory) {
+        uint256[] memory userCampaignIds = ownerToCampaignIds[_user];
+        uint256 pendingCount = 0;
+
+        for (uint256 i = 0; i < userCampaignIds.length; i++) {
+            uint256 campaignId = userCampaignIds[i];
+            if (keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("pending"))) {
+                pendingCount++;
+            }
+        }
+
+        Campaign[] memory pendingCampaigns = new Campaign[](pendingCount);
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 0; i < userCampaignIds.length; i++) {
+            uint256 campaignId = userCampaignIds[i];
+            if (keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("pending"))) {
+                pendingCampaigns[currentIndex] = campaigns[campaignId];
+                currentIndex++;
+            }
+        }
+
+        return pendingCampaigns;
+    }
+
+    function getUserRejectedCampaigns(address _user) public view returns (Campaign[] memory) {
+        uint256[] memory userCampaignIds = ownerToCampaignIds[_user];
+        uint256 rejectedCount = 0;
+
+        for (uint256 i = 0; i < userCampaignIds.length; i++) {
+            uint256 campaignId = userCampaignIds[i];
+            if (keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("rejected"))) {
+                rejectedCount++;
+            }
+        }
+
+        Campaign[] memory rejectedCampaigns = new Campaign[](rejectedCount);
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 0; i < userCampaignIds.length; i++) {
+            uint256 campaignId = userCampaignIds[i];
+            if (keccak256(bytes(campaigns[campaignId].approvalStatus)) == keccak256(bytes("rejected"))) {
+                rejectedCampaigns[currentIndex] = campaigns[campaignId];
+                currentIndex++;
+            }
+        }
+
+        return rejectedCampaigns;
+    }
+
     
     // Get all campaigns created by a specific user
     function getUserCampaigns(address _user) public view returns (Campaign[] memory) {
@@ -417,7 +495,7 @@ contract CrowdfundingImproved {
             uint256 campaignId = userCampaignIds[i];
             Campaign memory campaign = campaigns[campaignId];
 
-            if (campaign.deadline > block.timestamp && campaign.deadline > latestDeadline && campaign.approved) {
+            if (campaign.deadline > block.timestamp && campaign.deadline > latestDeadline && keccak256(bytes(campaign.approvalStatus)) == keccak256(bytes("approved"))) {
                 latestDeadline = campaign.deadline;
                 latestCampaign = campaign;
                 found = true;

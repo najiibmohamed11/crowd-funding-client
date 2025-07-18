@@ -60,6 +60,18 @@ export default function ModernAnonymousCreatorProfile() {
     params: [account?.address ?? ""],
   });
 
+  const { data: userPendingCampaigns, isPending: isPendingUserPending } = useReadContract({
+    contract,
+    method: "function getUserPendingCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date, string paymentMethod)[] donators, bool isActive, string approvalStatus)[])",
+    params: [account?.address ?? ""],
+  });
+
+  const { data: userRejectedCampaigns, isPending: isPendingUserRejected } = useReadContract({
+    contract,
+    method: "function getUserRejectedCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date, string paymentMethod)[] donators, bool isActive, string approvalStatus)[])",
+    params: [account?.address ?? ""],
+  });
+
   // Update expired campaigns state
   useEffect(() => {
     if (expiredCampaigns) {
@@ -111,7 +123,12 @@ export default function ModernAnonymousCreatorProfile() {
   }
 
   // Check if user has any campaigns at all
-  const hasAnyCampaigns = (activeCampaigns?.length || 0) + (pastCampaigns?.length || 0) + (pausedCampaigns?.length || 0) > 0;
+  const hasAnyCampaigns =
+    (activeCampaigns?.length || 0) +
+    (pastCampaigns?.length || 0) +
+    (pausedCampaigns?.length || 0) +
+    (userPendingCampaigns?.length || 0) +
+    (userRejectedCampaigns?.length || 0) > 0;
 
   if (!hasAnyCampaigns) {
     return (
@@ -138,7 +155,9 @@ export default function ModernAnonymousCreatorProfile() {
   const allDonators = [
     ...(activeCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
     ...(pastCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
-    ...(pausedCampaigns?.flatMap((campaign) => campaign?.donators || []) || [])
+    ...(pausedCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
+    ...(userPendingCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
+    ...(userRejectedCampaigns?.flatMap((campaign) => campaign?.donators || []) || [])
   ];
 
   // Calculate total amount raised with null checks
@@ -149,8 +168,19 @@ export default function ModernAnonymousCreatorProfile() {
         total += Number(donator.amount) / 1e18;
       }
     });
-    return total.toFixed(0);
+    return total.toFixed(2);
   };
+
+  // Count all campaigns across all statuses
+  const allCampaignsCount =
+    (activeCampaigns?.length || 0) +
+    (pastCampaigns?.length || 0) +
+    (pausedCampaigns?.length || 0) +
+    (userPendingCampaigns?.length || 0) +
+    (userRejectedCampaigns?.length || 0);
+
+  // Calculate total donations received (number of donations)
+  const totalDonationsReceived = allDonators.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br text-slate-900 p-4 md:p-8">
@@ -222,7 +252,7 @@ export default function ModernAnonymousCreatorProfile() {
                 {
                   icon: Users,
                   label: "Campaigns",
-                  value: (activeCampaigns?.length || 0) + (pastCampaigns?.length || 0) + (pausedCampaigns?.length || 0),
+                  value: allCampaignsCount,
                 },
                 {
                   icon: Users,
@@ -235,15 +265,9 @@ export default function ModernAnonymousCreatorProfile() {
                   value: `${getTotalRaised()} POL`,
                 },
                 {
-                  icon: TrendingUp,
-                  label: "Success Rate",
-                  value: pastCampaigns.length > 0
-                    ? `${Math.round(
-                        (pastCampaigns.filter(
-                          (c) => Number(c.amountCollected) / 1e18 >= Number(c.target)
-                        ).length / pastCampaigns.length) * 100
-                      )}%`
-                    : "N/A",
+                  icon: Coins,
+                  label: "Total Donations",
+                  value: totalDonationsReceived,
                 },
               ].map((stat, index) => (
                 <motion.div
@@ -289,6 +313,18 @@ export default function ModernAnonymousCreatorProfile() {
                       className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
                     >
                       Paused Campaigns
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="pending"
+                      className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                    >
+                      Pending Campaigns
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="rejected"
+                      className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                    >
+                      Rejected Campaigns
                     </TabsTrigger>
                   </TabsList>
 
@@ -500,6 +536,128 @@ export default function ModernAnonymousCreatorProfile() {
                     ) : (
                       <div className="text-center py-8">
                         <p className="text-slate-500">No paused campaigns found.</p>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="pending" className="space-y-6">
+                    {isPendingUserPending ? (
+                      <div className="flex justify-center py-8">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                      </div>
+                    ) : userPendingCampaigns && userPendingCampaigns.length > 0 ? (
+                      userPendingCampaigns.map((campaign, i) => {
+                        const target = Number(campaign.target);
+                        const raised = Number(campaign.amountCollected) / 1e18;
+                        const progress = (raised / target) * 100;
+                        return (
+                          <MotionCard
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
+                            className="bg-white border-slate-200 hover:border-purple-300 transition-all duration-300 shadow-md hover:shadow-lg rounded-xl overflow-hidden"
+                          >
+                            <CardHeader>
+                              <CardTitle>{campaign.title}</CardTitle>
+                              <CardDescription className="text-slate-500">
+                                {raised.toFixed(2)} POL raised of {target} POL goal
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <Progress
+                                value={progress > 100 ? 100 : progress}
+                                className="h-2 bg-slate-100"
+                              />
+                              <div className="flex justify-between items-center mt-2">
+                                <p className="text-sm text-slate-500">
+                                  {campaign.donators.length} backers
+                                </p>
+                                <p className="text-sm text-slate-500">
+                                  Deadline:{" "}
+                                  {new Date(Number(campaign.deadline) * 1000).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">Status: {campaign.approvalStatus}</div>
+                            </CardContent>
+                            <CardFooter>
+                              <Link href={`campaign-details/${campaign.id}`}>
+                                <Button
+                                  variant="outline"
+                                  className="w-full bg-white border-slate-200 text-slate-900 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-300"
+                                >
+                                  View Campaign
+                                  <ChevronRight className="w-4 h-4 ml-2" />
+                                </Button>
+                              </Link>
+                            </CardFooter>
+                          </MotionCard>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-slate-500">No pending campaigns found.</p>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="rejected" className="space-y-6">
+                    {isPendingUserRejected ? (
+                      <div className="flex justify-center py-8">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                      </div>
+                    ) : userRejectedCampaigns && userRejectedCampaigns.length > 0 ? (
+                      userRejectedCampaigns.map((campaign, i) => {
+                        const target = Number(campaign.target);
+                        const raised = Number(campaign.amountCollected) / 1e18;
+                        const progress = (raised / target) * 100;
+                        return (
+                          <MotionCard
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
+                            className="bg-white border-slate-200 hover:border-purple-300 transition-all duration-300 shadow-md hover:shadow-lg rounded-xl overflow-hidden"
+                          >
+                            <CardHeader>
+                              <CardTitle>{campaign.title}</CardTitle>
+                              <CardDescription className="text-slate-500">
+                                {raised.toFixed(2)} POL raised of {target} POL goal
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <Progress
+                                value={progress > 100 ? 100 : progress}
+                                className="h-2 bg-slate-100"
+                              />
+                              <div className="flex justify-between items-center mt-2">
+                                <p className="text-sm text-slate-500">
+                                  {campaign.donators.length} backers
+                                </p>
+                                <p className="text-sm text-slate-500">
+                                  Deadline:{" "}
+                                  {new Date(Number(campaign.deadline) * 1000).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">Status: {campaign.approvalStatus}</div>
+                            </CardContent>
+                            <CardFooter>
+                              <Link href={`campaign-details/${campaign.id}`}>
+                                <Button
+                                  variant="outline"
+                                  className="w-full bg-white border-slate-200 text-slate-900 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-300"
+                                >
+                                  View Campaign
+                                  <ChevronRight className="w-4 h-4 ml-2" />
+                                </Button>
+                              </Link>
+                            </CardFooter>
+                          </MotionCard>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-slate-500">No rejected campaigns found.</p>
                       </div>
                     )}
                   </TabsContent>
