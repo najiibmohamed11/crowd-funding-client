@@ -161,12 +161,13 @@ export default function CreateCampaign() {
                       <FileText className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <Input
+                  
                       onChange={(e) => {
                         setTitle(e.target.value);
                       }}
                       name="title"
                       placeholder="Campaign Title"
-                      className="pl-10 h-14 text-lg border-2 hover:border-primary/50 transition-colors"
+                      className="pl-10 h-14 text-xl border-2 hover:border-primary/50 transition-colors"
                     />
                   </div>
                 </div>

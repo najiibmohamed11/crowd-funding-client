@@ -43,10 +43,11 @@ export const donation = async (
 
    const isPaymentVerified=await evcPaying(phoneNumber,evcAmount)
 
-    if (!isPaymentVerified) {
+    if (!isPaymentVerified.status) {
       console.log(isPaymentVerified)
-      throw new Error(isPaymentVerified);
+      throw new Error(isPaymentVerified.error);
     }
+
 
     if (!process.env.PRIVATE_KEY) {
       throw new Error("Private key not configured");
