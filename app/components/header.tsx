@@ -4,7 +4,7 @@ import { Command, Search } from "lucide-react";
 import ConnectWallet from "./ConnectWallet";
 import Link from "next/link";
 import { SearchModal } from "./search-modal";
-import logo from "@/public/light-logo.svg"
+import logo from "@/public/logo.svg"
 import { Button } from "@/components/ui/button";
 import { useActiveAccount } from "thirdweb/react";
 export default function Header() {

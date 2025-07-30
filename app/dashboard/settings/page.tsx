@@ -201,7 +201,7 @@ export default function ApprovalPage() {
                   <div className="text-gray-500 text-xs">Deadline: {new Date(Number(campaign.deadline) * 1000).toLocaleDateString()}</div>
                   <p className="text-gray-700 text-sm mt-2 line-clamp-3">{campaign.story}</p>
                 </div>
-                <div className="flex gap-2 mt-4">
+                {/* <div className="flex gap-2 mt-4">
                   <Button
                     onClick={() => handleApprove(String(campaign.id))}
                     disabled={isApproving && approvingId === String(campaign.id)}
@@ -209,7 +209,7 @@ export default function ApprovalPage() {
                   >
                     {isApproving && approvingId === String(campaign.id) ? "Approving..." : "Approve"}
                   </Button>
-                </div>
+                </div> */}
                 <div className="text-xs text-gray-500 mt-1">Status: {campaign.approvalStatus}</div>
               </Card>
             ))}

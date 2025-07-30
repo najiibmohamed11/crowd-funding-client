@@ -81,7 +81,6 @@ export function Profile() {
       Number(data.target)
     )
   );
-  console.log(lastCampaignId)
   const paus = async () => {
     const transaction = await prepareContractCall({
       contract,
@@ -133,7 +132,7 @@ export function Profile() {
               stroke="#ff6b6b"
               strokeWidth="8"
               strokeDasharray={`${2 * Math.PI * 60}`}
-              strokeDashoffset={`${2 * Math.PI * 60 * (1 - progress / 100)}`}
+              strokeDashoffset={`${2 * Math.PI * 60 * (1 - Math.min(progress, 100) / 100)}`}
               className="transition-all duration-1000 ease-out"
             />
           </svg>

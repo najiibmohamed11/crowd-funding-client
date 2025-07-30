@@ -262,7 +262,7 @@ export default function ModernAnonymousCreatorProfile() {
                 {
                   icon: SiPolygon,
                   label: "Raised",
-                  value: `${getTotalRaised()} POL`,
+                  value: `${getTotalRaised()}`,
                 },
                 {
                   icon: Coins,

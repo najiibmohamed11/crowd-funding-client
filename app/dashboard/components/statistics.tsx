@@ -13,7 +13,7 @@ export function Statistics({ campaignData }) {
     allCampaignDonators.forEach((donator) => {
       total += Number(donator.amount) / 1e18;
     });
-    return total;
+    return total.toFixed(2);
   };
 
   const confertMaticToUsdt = async (amount: number) => {
