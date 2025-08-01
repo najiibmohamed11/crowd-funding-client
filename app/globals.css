@@ -6,6 +6,16 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* In your global CSS file (e.g., globals.css) */
+nextjs-portal {
+  display: none !important;
+}
+
+/* Or, to be more specific and avoid hiding other iframes */
+iframe#webpack-dev-server-client-overlay {
+  display: none !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

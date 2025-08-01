@@ -19,7 +19,7 @@ export function ShareModal({ isOpen, onClose, campaignUrl }: ShareModalProps) {
   const [isCopied, setIsCopied] = useState(false)
 
   const shareUrl = encodeURIComponent(campaignUrl)
-  const shareTitle = encodeURIComponent("Check out this Web3 fundraising campaign!")
+  const shareTitle = encodeURIComponent("Check out this  fundraising campaign!")
 
   const shareFacebook = () => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`, '_blank')

@@ -127,7 +127,7 @@ export default function CreateCampaign() {
       
     const receipt =await  sendTransaction(transaction);
     console.log(receipt.blockHash);
-      router.push('/');
+      router.push('/dashboard/profile');
     } catch (error) {
       console.log("error during submission", error);
     }

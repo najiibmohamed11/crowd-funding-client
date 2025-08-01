@@ -2,11 +2,13 @@ import Web3Avatar from '@/app/components/web3Avatar';
 import { Mail, Gift, Heart, X, MoreHorizontal } from 'lucide-react'
 import { SiPolygon } from 'react-icons/si';
 export function TopDonators({ donators }) {
+  const top3Donators=donators.sort((a,b)=>(Number(b.amount) / 1e18)-(Number(a.amount) / 1e18)).slice(0,3)
+
   return (
     <div className="rounded-2xl p-6">
-      <h2 className="text-xl font-medium mb-6">Top 10 Donators</h2>
+      <h2 className="text-xl font-medium mb-6">Top 3 Donators</h2>
       <div className="space-y-6">
-        {donators.map((donator,index) => {
+        {top3Donators.map((donator,index) => {
           const date = new Date(donator.date).toLocaleDateString('en-GB'); // Format as DD/MM/YYYY
 
           return (

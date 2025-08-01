@@ -63,7 +63,7 @@ export default function DashboardPage() {
   if (account?.address == null) {
     return (
       <main className="h-[80vh] flex items-center justify-center">
-        <Card className="p-8 max-w-md w-full text-center space-y-4">
+        <Card className="p-8 max-w-md w-full text-center space-y-4 flex flex-col items-center">
           <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center">
             <Wallet className="w-6 h-6" />
           </div>

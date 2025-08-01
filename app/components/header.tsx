@@ -7,6 +7,11 @@ import { SearchModal } from "./search-modal";
 import logo from "@/public/logo.svg"
 import { Button } from "@/components/ui/button";
 import { useActiveAccount } from "thirdweb/react";
+import { SiPolygon } from "react-icons/si"; // already imported
+
+// Inside return, after <SearchModal />
+
+
 export default function Header() {
   const account = useActiveAccount();
   
@@ -27,7 +32,7 @@ export default function Header() {
         </Link>
 
         {/* Search Bar */}
-        <div className="  w-[320px] lg:flex  hidden  ">
+        <div className="  w-[420px] lg:flex  hidden  ">
           <div className="relative flex w-full items-center">
             <button
               onClick={() =>
@@ -49,21 +54,37 @@ export default function Header() {
               </div>
             </button>
             <SearchModal />
+            <Link
+            href="https://amoy.polygonscan.com/address/0xEEffd871b16eCFc2Eda84946Af61e1F8CcaF0029"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-4 flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1 text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
+          >
+            <SiPolygon className="text-purple-600 w-4 h-4" />
+            Amoy
+          </Link>
+
           </div>
         </div>
       </div>
 
       {/* Actions */}
             {/* Actions */}
-            <div className="flex items-center gap-3">
-          <ConnectWallet  />
-        {account?.address&&
-         <Link href="/dashboard">
-            <Button className="h-10 rounded-md bg-black px-5 text-sm font-medium text-white hover:bg-black/90">
-              Dashboard
-            </Button>
-          </Link>}
-        </div>
+<div className="flex items-center gap-3">
+  <ConnectWallet />
+  {account?.address && (
+    <>
+      <Link href="/dashboard">
+        <Button className="h-10 rounded-md bg-black px-5 text-sm font-medium text-white hover:bg-black/90">
+          Dashboard
+        </Button>
+      </Link>
+
+  
+    </>
+  )}
+</div>
+
       </div>
   );
 }
