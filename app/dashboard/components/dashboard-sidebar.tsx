@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { LayoutGrid, FileText, BarChart3, Users, Settings } from 'lucide-react'
+import { LayoutGrid, FileText, BarChart3, Users, Settings, Shield } from 'lucide-react'
 import Link from 'next/link'
 import clsx from 'clsx'
 import Image from 'next/image'
@@ -30,6 +30,7 @@ export function DashboardSidebar() {
   ];
   if (isOracle) {
     links.push({ href: "/dashboard/settings", icon: BarChart3 }); // Use BarChart3 or a new icon for approval
+    links.push({ href: "/dashboard/oracle", icon: Shield }); // Oracle management
   }
 
   return (
