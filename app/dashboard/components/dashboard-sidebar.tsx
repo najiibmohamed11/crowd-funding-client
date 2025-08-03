@@ -38,7 +38,7 @@ export function DashboardSidebar() {
        <Link href="/">
           <div className="flex-shrink-0">
             <Image
-              src='/logo.svg'
+              src='/sacid.svg'
               alt="Logo"
               width={40}
               height={40}
