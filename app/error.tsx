@@ -1,0 +1,24 @@
+// app/error.tsx (App Router only)
+"use client";
+
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  if (process.env.NODE_ENV === "development") {
+    // Hide the error overlay in development
+    return null;
+  }
+
+  return (
+    <html>
+      <body>
+        <h2>Something went wrong!</h2>
+        <button onClick={reset}>Try again</button>
+      </body>
+    </html>
+  );
+}
