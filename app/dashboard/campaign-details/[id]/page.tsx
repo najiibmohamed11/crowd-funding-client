@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import { Clock, Target, Users, Wallet, PauseCircle, PlayCircle, Heart, ArrowLeft, Copy, Edit2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -446,64 +446,43 @@ export default function CampaignDetails() {
               {/* Donators Section */}
               <Card className="border-none shadow-lg overflow-hidden">
                 <CardContent className="p-3 sm:p-4 md:p-6">
-                  <Tabs defaultValue="donators">
-                    <TabsList className="w-full bg-slate-100">
-                      <TabsTrigger value="donators" className="flex-1 text-xs sm:text-sm">
-                        Donators
-                      </TabsTrigger>
-                      <TabsTrigger value="updates" className="flex-1 text-xs sm:text-sm">
-                        Updates
-                      </TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="donators" className="mt-3 sm:mt-4 space-y-3 sm:space-y-4">
-                      {campaign.donators.length > 0 ? (
-                        <div>
-                          <div className="mt-3 sm:mt-4 md:mt-6 space-y-3 sm:space-y-4">
-                            {campaign.donators.map((donator: Donator, index: number) => (
-                              <div
-                                key={index}
-                                className="flex items-start gap-2 sm:gap-4 border-b last:border-b-0 pb-3 sm:pb-4 last:pb-0"
+                  <h3 className="text-lg font-medium text-slate-900 mb-4">Donators</h3>
+                  <div className="max-h-96 overflow-y-auto space-y-4">
+                    {campaign.donators.length > 0 ? (
+                      campaign.donators.map((donator: Donator, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-2 sm:gap-4 border-b last:border-b-0 pb-3 sm:pb-4 last:pb-0"
+                        >
+                          <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                            <Web3Avatar address={donator.donator} size="md" />
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between flex-wrap gap-1 sm:gap-2">
+                              <p className="text-xs sm:text-sm font-medium text-foreground break-all">
+                                {`${donator.donator.slice(0, 6)}...${donator.donator.slice(-4)}`}
+                              </p>
+                              <Badge
+                                variant="secondary"
+                                className="bg-blue-100 dark:bg-blue-500 text-blue-800 dark:text-white text-xs whitespace-nowrap"
                               >
-                                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                                  <Web3Avatar address={donator.donator} size="md" />
-                                </Avatar>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between flex-wrap gap-1 sm:gap-2">
-                                    <p className="text-xs sm:text-sm font-medium text-foreground break-all">
-                                      {`${donator.donator.slice(0, 6)}...${donator.donator.slice(-4)}`}
-                                    </p>
-                                    <Badge
-                                      variant="secondary"
-                                      className="bg-blue-100 dark:bg-blue-500 text-blue-800 dark:text-white text-xs whitespace-nowrap"
-                                    >
-                                      {Number(donator.amount) / 1e18} pol
-                                    </Badge>
-                                  </div>
-                                  <p className="mt-1 text-xs sm:text-sm text-muted-foreground break-words">
-                                    {donator.comment}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
+                                {Number(donator.amount) / 1e18} pol
+                              </Badge>
+                            </div>
+                            <p className="mt-1 text-xs sm:text-sm text-muted-foreground break-words">
+                              {donator.comment}
+                            </p>
                           </div>
                         </div>
-                      ) : (
-                        <div className="text-center py-6 sm:py-8">
-                          <Users className="h-8 w-8 sm:h-12 sm:w-12 text-slate-300 mx-auto mb-2 sm:mb-3" />
-                          <h3 className="text-base sm:text-lg font-medium text-slate-900">No donators yet</h3>
-                          <p className="text-xs sm:text-sm text-slate-500 mt-1">Share to more people in order to get donators</p>
-                        </div>
-                      )}
-                    </TabsContent>
-
-                    <TabsContent value="updates" className="mt-3 sm:mt-4">
+                      ))
+                    ) : (
                       <div className="text-center py-6 sm:py-8">
-                        <h3 className="text-base sm:text-lg font-medium text-slate-900">No updates yet</h3>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1">Check back later for campaign updates</p>
+                        <Users className="h-8 w-8 sm:h-12 sm:w-12 text-slate-300 mx-auto mb-2 sm:mb-3" />
+                        <h3 className="text-base sm:text-lg font-medium text-slate-900">No donators yet</h3>
+                        <p className="text-xs sm:text-sm text-slate-500 mt-1">Share to more people in order to get donators</p>
                       </div>
-                    </TabsContent>
-                  </Tabs>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
