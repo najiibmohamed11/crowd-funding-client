@@ -30,7 +30,7 @@ export function DashboardSidebar() {
   ];
   if (isOracle) {
     links.push({ href: "/dashboard/settings", icon: BarChart3 }); // Use BarChart3 or a new icon for approval
-    links.push({ href: "/dashboard/oracle", icon: Shield }); // Oracle management
+    links.push({ href: "/dashboard/management", icon: Shield }); // Oracle management
   }
 
   return (

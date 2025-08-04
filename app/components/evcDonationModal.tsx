@@ -9,7 +9,7 @@ import { motion } from "framer-motion"
 import { getContract, prepareContractCall } from "thirdweb"
 import { contract } from "../client"
 import { polygonAmoy } from "thirdweb/chains"
-import { useSendTransaction } from "thirdweb/react"
+import { useReadContract, useSendTransaction } from "thirdweb/react"
 import { useParams } from 'next/navigation'
 import { parseEther } from "ethers"
 import { SiPolygon } from 'react-icons/si'
@@ -45,6 +45,11 @@ export function EvcDonationModal({
   const id = BigInt(params.id as string);
   const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState("");
+  const { data: contractBalance } = useReadContract({
+    contract,
+    method: "function getContractBalance() view returns (uint256)",
+    params: [],
+  })
 
   useEffect(() => {
     fetch(
@@ -82,13 +87,18 @@ export function EvcDonationModal({
       setError("Please enter a valid Somali phone number starting with +252");
       return false;
     }
+    if((Number(contractBalance)/1e18) < Number(evcAmount)){
+      console.log("contractBalance",Number(contractBalance)/1e18)
+      console.log("evcAmount",evcAmount)
+      setError("Insufficient funds in the contract. Please contact us on suport@caawi.me to add more funds.");
+      return false;
+    }
     setError(null);
     return true;
   };
 
   const handleDonate = async() => {
     if (!validateInput()) return;
-
     try {
       setIsLoading(true);
       setError(null);

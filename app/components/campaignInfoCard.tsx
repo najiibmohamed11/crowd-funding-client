@@ -106,10 +106,10 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
             <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-0">
               <span className="text-2xl sm:text-3xl font-semibold text-foreground flex items-center">
                 {amountCollected.toString()} 
-                <span className="text-base sm:text-lg ml-1">MATIC</span>
+                <span className="text-base sm:text-lg ml-1">POL</span>
               </span>
               <span className="text-xs sm:text-sm text-muted-foreground">
-                raised of {target.toString()} MATIC goal
+                raised of {target.toString()} POL goal
               </span>
             </div>
             <div className="relative mt-3">
@@ -208,7 +208,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
                         variant="secondary"
                         className="bg-blue-100 dark:bg-blue-500 text-blue-800 dark:text-white text-xs whitespace-nowrap"
                       >
-                        {Number(donator.amount) / 1e18} MATIC
+                        {Number(donator.amount) / 1e18} POL
                       </Badge>
                     </div>
                     <p className="mt-1 text-xs sm:text-sm text-muted-foreground break-words">

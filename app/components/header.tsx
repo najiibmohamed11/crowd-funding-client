@@ -60,7 +60,7 @@ export default function Header() {
             className="ml-4 flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1 text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
           >
             <SiPolygon className="text-purple-600 w-4 h-4" />
-            Amoy
+            explorer
           </Link>
 
           </div>

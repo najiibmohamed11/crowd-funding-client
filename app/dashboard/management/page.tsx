@@ -28,8 +28,8 @@ export default function OraclePage() {
   const [amount, setAmount] = useState("")
   const [withdrawAmount, setWithdrawAmount] = useState("")
   const [newOracleAddress, setNewOracleAddress] = useState("")
-  const [copied, setCopied] = useState(false)
-
+  const [copiedContract, setCopiedContract] = useState(false)
+  const [copiedOracle, setCopiedOracle] = useState(false)
   // Oracle address
   const { data: oracleAddress } = useReadContract({
     contract,
@@ -63,17 +63,17 @@ export default function OraclePage() {
   const isOracle = account?.address && oracleAddress && 
     account.address.toLowerCase() === oracleAddress.toLowerCase()
 
-  const handleFundEscrow = () => {
+  const handleFundEscrow = async() => {
     if (!amount || parseFloat(amount) <= 0) return
     
-    const transaction = prepareContractCall({
+    const transaction =  prepareContractCall({
       contract,
       method: "function fundEscrow() payable",
       params: [],
       value: BigInt(parseFloat(amount) * 10**18), // Convert to wei
     })
-    sendTransaction(transaction)
-    setAmount("")
+     sendTransaction(transaction)
+     console.log("Funded Escrow" ,transaction)
   }
 
   const handleWithdrawFromEscrow = () => {
@@ -85,10 +85,9 @@ export default function OraclePage() {
       params: [BigInt(parseFloat(withdrawAmount) * 10**18)], // Convert to wei
     })
     sendTransaction(transaction)
-    setWithdrawAmount("")
   }
 
-  const handleSetOracle = () => {
+  const handleSetOracle = async() => {
     if (!newOracleAddress) return
     
     const transaction = prepareContractCall({
@@ -97,13 +96,17 @@ export default function OraclePage() {
       params: [newOracleAddress],
     })
     sendTransaction(transaction)
-    setNewOracleAddress("")
   }
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string,type:'contract'|'oracle') => {
     navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    if(type === 'contract'){
+      setCopiedContract(true)
+      setTimeout(() => setCopiedContract(false), 2000)
+    }else{
+      setCopiedOracle(true)
+      setTimeout(() => setCopiedOracle(false), 2000)
+    }
   }
 
   const formatAddress = (address: string) => {
@@ -170,7 +173,7 @@ export default function OraclePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {contractBalance ? formatBalance(contractBalance) : "0.0000"} MATIC
+                  {contractBalance ? formatBalance(contractBalance) : "0.0000"} POL
                 </div>
                 <p className="text-purple-100 text-sm mt-1">Total contract funds available for EVC payments</p>
               </CardContent>
@@ -274,9 +277,9 @@ export default function OraclePage() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => copyToClipboard(contract.address)}
+                      onClick={() => copyToClipboard(contract.address,'contract')}
                     >
-                      {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copiedContract ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     </Button>
                   </div>
                 </div>
@@ -288,9 +291,9 @@ export default function OraclePage() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => copyToClipboard(oracleAddress)}
+                        onClick={() => copyToClipboard(oracleAddress,"oracle")}
                       >
-                        {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        {copiedOracle ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                       </Button>
                     )}
                   </div>

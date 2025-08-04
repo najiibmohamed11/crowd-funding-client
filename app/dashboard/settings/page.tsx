@@ -108,8 +108,7 @@ export default function ApprovalPage() {
       <div className="flex justify-center mb-8">
         <button
           className={`px-4 py-2 rounded-l ${activeTab === "pending" ? "bg-primary text-white" : "bg-gray-200"}`}
-          onClick={() => setActiveTab("pending")}
-        >
+          onClick={() => setActiveTab("pending")}>
           Pending
         </button>
         <button
@@ -145,7 +144,7 @@ export default function ApprovalPage() {
                       <span className="text-green-500 text-xs ml-1">Copied!</span>
                     )}
                   </div>
-                  <div className="text-gray-500 text-xs">Target: {campaign.target} MATIC</div>
+                  <div className="text-gray-500 text-xs">Target: {campaign.target}POL</div>
                   <div className="text-gray-500 text-xs">Deadline: {new Date(Number(campaign.deadline) * 1000).toLocaleDateString()}</div>
                   <p className="text-gray-700 text-sm mt-2 line-clamp-3">{campaign.story}</p>
                 </div>
@@ -197,7 +196,7 @@ export default function ApprovalPage() {
                       <span className="text-green-500 text-xs ml-1">Copied!</span>
                     )}
                   </div>
-                  <div className="text-gray-500 text-xs">Target: {campaign.target} MATIC</div>
+                  <div className="text-gray-500 text-xs">Target: {campaign.target}POL</div>
                   <div className="text-gray-500 text-xs">Deadline: {new Date(Number(campaign.deadline) * 1000).toLocaleDateString()}</div>
                   <p className="text-gray-700 text-sm mt-2 line-clamp-3">{campaign.story}</p>
                 </div>
