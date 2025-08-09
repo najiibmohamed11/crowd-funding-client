@@ -16,6 +16,7 @@ import { useReadContract } from "thirdweb/react";
 import { useParams } from "next/navigation";
 import Web3Avatar from "@/app/components/web3Avatar";
 import Loading from "./components/detailsSkeleton";
+import { FaLessThanEqual } from "react-icons/fa6";
 
 
 
@@ -29,6 +30,14 @@ export default function CampaignDetails() {
     "function getOngoingCampaigns() view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date)[] donators, bool isActive)[])",
     params: [],
   });
+
+  const { data: dublicateCampaign } = useReadContract({
+    contract,
+    method:
+      "function getCampaign(uint256 _campaignId) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date, string paymentMethod)[] donators, bool isActive, bool isCompleted, string approvalStatus))",
+    params: [BigInt(id)],
+  });
+
 
   if (isLoading)
     return (
@@ -44,12 +53,24 @@ export default function CampaignDetails() {
       </div>
     );
 
-  if (!data)
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center py-10">No data available.</div>
-      </div>
-    );
+  if (data?.length===0||!data){
+    console.log(dublicateCampaign)
+    
+    if(dublicateCampaign?.isCompleted===true){
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center py-10">campaign reached its target🎉🎊</div>
+        </div>
+      );
+    }else{
+      return(
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center py-10">Campaign not found.</div>
+        </div>
+      )
+    }
+  }
+    
 
 
   const campaign = data.find((campaign:any)=> Number(campaign.id)==id);

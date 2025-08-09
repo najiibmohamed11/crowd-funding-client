@@ -81,6 +81,7 @@ const CampaignInfoCard: React.FC<CampaignCardProp> = ({
   };
 
   const handleDonate = async (amount: string, comment: string) => {
+     window.location.reload();
     // Add a small delay to allow the transaction to be processed
     // setTimeout(() => {
     //   window.location.reload();

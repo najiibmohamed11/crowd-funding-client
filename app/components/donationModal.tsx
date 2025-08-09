@@ -78,7 +78,7 @@ export function DonationModal({
     return true;
   };
 
-  const handleDonate = () => {
+  const handleDonate = async () => {
     if (!validateInput()) return;
 
     try {
@@ -89,7 +89,8 @@ export function DonationModal({
         params: [id, comment, now],
         value: parseEther(maticAmount.toString()),
       });
-      sendTransaction(transaction);
+        sendTransaction(transaction);
+
     } catch (err) {
       setError("Failed to prepare transaction. Please try again.");
       console.error("Transaction preparation error:", err);
