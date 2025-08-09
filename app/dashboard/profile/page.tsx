@@ -72,10 +72,18 @@ export default function ModernAnonymousCreatorProfile() {
     params: [account?.address ?? ""],
   });
 
+  // Fetch completed campaigns for the current user (goal reached, no longer donatable)
+  const { data: userCompletedCampaigns, isPending: isPendingUserCompleted } = useReadContract({
+    contract,
+    method:
+      "function getUserCompletedCampaigns(address _user) view returns ((uint256 id, address owner, string title, string story, uint256 target, uint256 deadline, uint256 amountCollected, string image, (address donator, uint256 amount, string comment, string date, string paymentMethod)[] donators, bool isActive, bool isCompleted, string approvalStatus)[])",
+    params: [account?.address ?? ""],
+  });
+
   // Update expired campaigns state
   useEffect(() => {
     if (expiredCampaigns) {
-      setPastCampaigns(expiredCampaigns || []);
+      setPastCampaigns(expiredCampaigns ? Array.from(expiredCampaigns as any[]) : []);
       setIsLoadingPast(false);
     }
   }, [expiredCampaigns]);
@@ -83,7 +91,7 @@ export default function ModernAnonymousCreatorProfile() {
   // Update paused campaigns state
   useEffect(() => {
     if (pausedCampaignsData) {
-      setPausedCampaigns(pausedCampaignsData || []);
+      setPausedCampaigns(pausedCampaignsData ? Array.from(pausedCampaignsData as any[]) : []);
       setIsLoadingPaused(false);
     }
   }, [pausedCampaignsData]);
@@ -127,6 +135,7 @@ export default function ModernAnonymousCreatorProfile() {
     (activeCampaigns?.length || 0) +
     (pastCampaigns?.length || 0) +
     (pausedCampaigns?.length || 0) +
+    (userCompletedCampaigns?.length || 0) +
     (userPendingCampaigns?.length || 0) +
     (userRejectedCampaigns?.length || 0) > 0;
 
@@ -156,6 +165,7 @@ export default function ModernAnonymousCreatorProfile() {
     ...(activeCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
     ...(pastCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
     ...(pausedCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
+    ...(userCompletedCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
     ...(userPendingCampaigns?.flatMap((campaign) => campaign?.donators || []) || []),
     ...(userRejectedCampaigns?.flatMap((campaign) => campaign?.donators || []) || [])
   ];
@@ -176,6 +186,7 @@ export default function ModernAnonymousCreatorProfile() {
     (activeCampaigns?.length || 0) +
     (pastCampaigns?.length || 0) +
     (pausedCampaigns?.length || 0) +
+    (userCompletedCampaigns?.length || 0) +
     (userPendingCampaigns?.length || 0) +
     (userRejectedCampaigns?.length || 0);
 
@@ -295,7 +306,8 @@ export default function ModernAnonymousCreatorProfile() {
             >
               <CardContent className="p-6">
                 <Tabs defaultValue="active" className="space-y-6">
-                  <TabsList className="bg-slate-100 text-slate-900 p-1 rounded-lg">
+                  <div className="max-w-full overflow-x-auto">
+                  <TabsList className="bg-slate-100 text-slate-900 p-1 rounded-lg min-w-max whitespace-nowrap">
                     <TabsTrigger
                       value="active"
                       className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
@@ -307,6 +319,12 @@ export default function ModernAnonymousCreatorProfile() {
                       className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
                     >
                       Past Campaigns
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="completed"
+                      className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                    >
+                      Completed Campaigns
                     </TabsTrigger>
                     <TabsTrigger
                       value="paused"
@@ -327,6 +345,7 @@ export default function ModernAnonymousCreatorProfile() {
                       Rejected Campaigns
                     </TabsTrigger>
                   </TabsList>
+                  </div>
 
                   <TabsContent value="active" className="space-y-6">
                     {activeCampaigns && activeCampaigns.length > 0 ? (
@@ -469,6 +488,74 @@ export default function ModernAnonymousCreatorProfile() {
                     ) : (
                       <div className="text-center py-8">
                         <p className="text-slate-500">No past campaigns found.</p>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="completed" className="space-y-6">
+                    {isPendingUserCompleted ? (
+                      <div className="flex justify-center py-8">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                      </div>
+                    ) : userCompletedCampaigns && userCompletedCampaigns.length > 0 ? (
+                      userCompletedCampaigns.map((campaign: any, i: number) => {
+                        const target = Number(campaign.target);
+                        const raised = Number(campaign.amountCollected) / 1e18;
+                        const backers = campaign.donators.length;
+                        const progress = (raised / target) * 100;
+                        const isSuccessful = Boolean(campaign.isCompleted) || raised >= target;
+
+                        return (
+                          <MotionCard
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
+                            className="bg-white border-slate-200 hover:border-purple-300 transition-all duration-300 shadow-md hover:shadow-lg rounded-xl overflow-hidden"
+                          >
+                            <CardHeader>
+                              <div className="flex justify-between items-center">
+                                <CardTitle>{campaign.title}</CardTitle>
+                                {isSuccessful && (
+                                  <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-medium rounded">
+                                    Completed
+                                  </span>
+                                )}
+                              </div>
+                              <CardDescription className="text-slate-500">
+                                {raised.toFixed(2)} POL raised of {target} POL goal
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <Progress
+                                value={progress > 100 ? 100 : progress}
+                                className={`h-2 ${isSuccessful ? "bg-emerald-100" : "bg-slate-100"}`}
+                              />
+                              <div className="flex justify-between items-center mt-2">
+                                <p className="text-sm text-slate-500">{backers} backers</p>
+                                <p className="text-sm text-slate-500">{new Date(Number(campaign.deadline) * 1000).toLocaleDateString()}</p>
+                              </div>
+                              {campaign.approvalStatus && (
+                                <div className="text-xs text-gray-500 mt-1">Status: {campaign.approvalStatus}</div>
+                              )}
+                            </CardContent>
+                            <CardFooter>
+                              <Link href={`campaign-details/${campaign.id}`}>
+                                <Button
+                                  variant="outline"
+                                  className="w-full bg-white border-slate-200 text-slate-900 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-300"
+                                >
+                                  View Campaign
+                                  <ChevronRight className="w-4 h-4 ml-2" />
+                                </Button>
+                              </Link>
+                            </CardFooter>
+                          </MotionCard>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-slate-500">No completed campaigns found.</p>
                       </div>
                     )}
                   </TabsContent>
