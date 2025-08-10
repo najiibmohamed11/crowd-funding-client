@@ -52,34 +52,31 @@ export default function CampaignDetails() {
         </div>
       </div>
     );
-
-  if (data?.length===0||!data){
-    console.log(dublicateCampaign)
+  if (!data){
+      return(
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center py-10">Campaign not found</div>
+        </div>
+      )
     
-    if(dublicateCampaign?.isCompleted===true){
+  }
+    
+  const campaign = data.find((campaign:any)=> Number(campaign.id)==id);
+  if (!campaign){
+    if(dublicateCampaign){
       return (
         <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center py-10">campaign reached its target🎉🎊</div>
+          <div className="text-center py-10">{dublicateCampaign.isCompleted?"this campaign reached its target🎉🎊":"this campaign was paused by the owner or expired"}</div>
         </div>
       );
     }else{
-      return(
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center py-10">Campaign not found.</div>
-        </div>
-      )
-    }
-  }
-    
-
-
-  const campaign = data.find((campaign:any)=> Number(campaign.id)==id);
-  if (!campaign)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center py-10">Campaign not found.</div>
       </div>
     );
+  }
+  }
 
   const formattedCampaigns = {
     title: campaign.title,
