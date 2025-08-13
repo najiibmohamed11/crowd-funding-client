@@ -54,7 +54,7 @@ export default function Header() {
             </button>
             <SearchModal />
             <Link
-            href="https://amoy.polygonscan.com/address/0xEEffd871b16eCFc2Eda84946Af61e1F8CcaF0029"
+            href="https://amoy.polygonscan.com/address/0x295de505E99D65603498E9936164cE26581740aa"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-4 flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1 text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
